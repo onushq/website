@@ -1,0 +1,57 @@
+---
+---
+
+<header class="site-header wrap">
+  <a class="wordmark" href="/" aria-label="Onus home">Onus</a>
+  <nav aria-label="Primary">
+    <ul>
+      <li><a href="#how">How it works</a></li>
+      <li><a href="#roadmap">Roadmap</a></li>
+      <li><a href="https://github.com/onushq">GitHub</a></li>
+    </ul>
+  </nav>
+</header>
+
+<style>
+  .site-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-block: 1.5rem;
+  }
+
+  .wordmark {
+    color: var(--ink);
+    text-decoration: none;
+    font-size: 1.5rem;
+    font-stretch: 125%;
+    font-weight: 820;
+    letter-spacing: -0.03em;
+  }
+
+  ul {
+    display: flex;
+    gap: clamp(0.9rem, 2.5vw, 2rem);
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  nav a {
+    color: var(--ink);
+    text-decoration: none;
+    font-size: 1rem;
+    font-weight: 500;
+  }
+
+  nav a:hover {
+    text-decoration: underline;
+  }
+
+  @media (max-width: 30rem) {
+    li:first-child {
+      display: none;
+    }
+  }
+</style>

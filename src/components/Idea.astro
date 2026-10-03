@@ -1,0 +1,78 @@
+---
+const durable = [
+  {
+    name: "Contracts",
+    body: "What each component promises: inputs, outputs, side effects and invariants, like “a refund never exceeds the original charge.” People own these.",
+  },
+  {
+    name: "Evidence",
+    body: "Tests, traces and benchmarks showing the promises hold. Machines produce most of it and re-run it constantly.",
+  },
+  {
+    name: "The map",
+    body: "How components relate: who calls whom, what data flows where, who owns what. Derived from the code on every change.",
+  },
+];
+---
+
+<section class="section wrap idea" aria-labelledby="idea-title">
+  <h2 class="visually-hidden" id="idea-title">The idea</h2>
+  <blockquote class="thesis">
+    <p>
+      Changes should be understood as shifts in meaning, scored by risk, and approved by evidence
+      rather than by someone reading lines.
+    </p>
+  </blockquote>
+
+  <div class="durable">
+    <p class="prose durable-intro">
+      Users never see your code. They see behavior, and code is becoming the cheapest way to produce
+      it. So the source of truth moves to three things that outlive any version of the code. Agents can
+      rewrite, regenerate or restructure the code freely, as long as the contracts hold and the evidence
+      passes.
+    </p>
+    <dl class="durable-list">
+      {
+        durable.map((d) => (
+          <div>
+            <dt class="subhead">{d.name}</dt>
+            <dd>{d.body}</dd>
+          </div>
+        ))
+      }
+    </dl>
+  </div>
+</section>
+
+<style>
+  .thesis {
+    border-left: 8px solid var(--ink);
+    padding-left: clamp(1rem, 0.5rem + 2vw, 2rem);
+  }
+
+  .thesis p {
+    font-size: clamp(1.75rem, 1rem + 3vw, 3.4rem);
+    font-stretch: 108%;
+    font-weight: 600;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    max-width: 24ch;
+  }
+
+  .durable {
+    margin-top: clamp(2.5rem, 1.5rem + 3vw, 4rem);
+  }
+
+  .durable-list {
+    margin-top: 2rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+    gap: 1.75rem clamp(1.5rem, 1rem + 2vw, 3rem);
+  }
+
+  dd {
+    margin-top: 0.5rem;
+    color: var(--ink-2);
+    max-width: 36ch;
+  }
+</style>

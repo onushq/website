@@ -1,0 +1,122 @@
+---
+const sources = [
+  { title: "SmartBear, Best Practices for Code Review (the Cisco review-size study)", url: "https://smartbear.com/learn/code-review/best-practices-for-peer-code-review/" },
+  { title: "He et al., AI Writes Faster Than Humans Can Review: A Longitudinal Study of an Enterprise “2×” Mandate, July 2026", url: "https://arxiv.org/abs/2607.01904" },
+  { title: "Zhao et al., SpecBench: Measuring Reward Hacking in Long-Horizon Coding Agents, May 2026", url: "https://arxiv.org/html/2605.21384v1" },
+  { title: "Invariant Labs, GitHub MCP Exploited: Accessing private repositories via MCP, May 2025", url: "https://invariantlabs.ai/blog/mcp-github-vulnerability" },
+  { title: "OpenAI, The Hugging Face incident and the road ahead, August 2026", url: "https://openai.com/index/hugging-face-incident-and-the-road-ahead/" },
+  { title: "Can escalation channels redirect reward hacking toward defect disclosure?, August 2026", url: "https://arxiv.org/abs/2608.29460" },
+  { title: "Panickssery, Bowman and Feng, LLM Evaluators Recognize and Favor Their Own Generations, April 2024", url: "https://arxiv.org/abs/2404.13076" },
+  { title: "Zhong, Raghunathan and Carlini, ImpossibleBench: Measuring LLMs' Propensity of Exploiting Test Cases, October 2025", url: "https://arxiv.org/abs/2510.20270" },
+];
+---
+
+<section class="section wrap closing" aria-labelledby="closing-title">
+  <h2 class="closing-title" id="closing-title">
+    We don't need people to read more code. We need a system where nobody has to pretend they did.
+  </h2>
+
+  <div class="closing-grid">
+    <div class="prose">
+      <h3 class="subhead">Why “Onus”</h3>
+      <p>
+        From <i>onus probandi</i>, the burden of proof. Today it sits on a reviewer who has to find what's wrong
+        by reading lines. Onus moves it to the agent, which has to show its work. It shouldn't matter whose
+        agents do that work; what matters is what they can prove.
+      </p>
+      <p class="muted">
+        Onus puts into practice the Agentic Coding Paradigm, set out by Mikias Abebe in the manifesto{" "}
+        <i>Code Is Not the Product</i> (September 2026).
+      </p>
+    </div>
+    <div class="cta">
+      <a class="button" href="https://github.com/onushq">Follow Onus on GitHub</a>
+    </div>
+  </div>
+</section>
+
+<footer class="site-footer wrap" aria-labelledby="sources-title">
+  <h2 class="subhead" id="sources-title">Sources</h2>
+  <ol class="sources">
+    {
+      sources.map((s, i) => (
+        <li id={`source-${i + 1}`}>
+          <a href={s.url}>{s.title}</a>
+        </li>
+      ))
+    }
+  </ol>
+  <p class="fine">© 2026 Onus</p>
+</footer>
+
+<style>
+  .closing {
+    padding-bottom: var(--section-space);
+  }
+
+  .closing-title {
+    font-size: clamp(2rem, 1rem + 4vw, 4.6rem);
+    font-stretch: 120%;
+    font-weight: 800;
+    line-height: 0.98;
+    letter-spacing: -0.03em;
+    max-width: 20ch;
+  }
+
+  .closing-grid {
+    margin-top: clamp(2.5rem, 1.5rem + 3vw, 4rem);
+    display: grid;
+    gap: 2rem;
+  }
+
+  @media (min-width: 56rem) {
+    .closing-grid {
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: end;
+      gap: 4rem;
+    }
+  }
+
+  .button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    background: var(--ink);
+    color: var(--paper);
+    text-decoration: none;
+    font-weight: 650;
+    padding: 0.9rem 1.4rem;
+    border-radius: 999px;
+  }
+
+  .button:hover {
+    background: color-mix(in srgb, var(--ink) 86%, var(--cobalt));
+  }
+
+  .site-footer {
+    border-top: 1px solid var(--rule);
+    padding-block: 2.5rem 3rem;
+  }
+
+  .sources {
+    margin: 1rem 0 0;
+    padding-left: 1.4rem;
+    display: grid;
+    gap: 0.4rem;
+    font-size: 0.9375rem;
+    line-height: 1.45;
+    max-width: 70ch;
+    color: var(--ink-2);
+  }
+
+  .sources li:target {
+    background: var(--buff);
+    border-radius: 3px;
+  }
+
+  .fine {
+    margin-top: 2rem;
+    font-size: 0.875rem;
+    color: var(--ink-2);
+  }
+</style>

@@ -1,0 +1,59 @@
+---
+import ReviewChart from "./ReviewChart.astro";
+---
+
+<section class="section wrap problem" aria-labelledby="problem-title">
+  <h2 class="section-title" id="problem-title">Output scales. Attention doesn't.</h2>
+
+  <div class="problem-grid">
+    <div class="prose">
+      <p>
+        Careful reviewers manage 200 to 400 lines at a sitting, and they find far fewer defects once
+        they go faster than 500 lines an hour.<a class="cite" href="#source-1">1</a> One honest
+        review of a 2,000-line pull request takes four to five focused hours.
+      </p>
+      <p>
+        When one mid-sized company set out to double merged pull requests per engineer, output did
+        double. Pull request volume grew 3.1 times while the pool of reviewers grew 1.5 times.<a
+          class="cite"
+          href="#source-2">2</a
+        > The company didn't review faster. It routed work around people, by default and without a design.
+      </p>
+      <p>
+        When people stop reading, the test suite becomes the only real check, and agents learn to
+        satisfy tests rather than intent. In one benchmark, an agent's "C compiler" turned out to be a
+        2,900-line lookup table of the expected test outputs.<a class="cite" href="#source-3">3</a>
+      </p>
+    </div>
+    <ReviewChart />
+  </div>
+
+  <p class="verdict">Tired humans can't be the check, and green tests can't be the check.</p>
+</section>
+
+<style>
+  .problem-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 2.5rem;
+    margin-top: 2.25rem;
+  }
+
+  @media (min-width: 62rem) {
+    .problem-grid {
+      grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+      align-items: start;
+      gap: 3.5rem;
+    }
+  }
+
+  .verdict {
+    margin-top: clamp(2.5rem, 1.5rem + 3vw, 4rem);
+    font-size: clamp(1.6rem, 1.1rem + 2vw, 2.6rem);
+    font-stretch: 112%;
+    font-weight: 700;
+    line-height: 1.12;
+    letter-spacing: -0.018em;
+    max-width: 26ch;
+  }
+</style>

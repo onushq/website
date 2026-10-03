@@ -1,0 +1,111 @@
+---
+const steps = [
+  { name: "Re-run the evidence in a fresh environment", body: "Never trust the author's test results." },
+  { name: "Compare intent to effect", body: "Does the semantic report match what the agent said it did?" },
+  { name: "Check contracts and rules from the map", body: "Declared promises and boundaries, not opinions." },
+  { name: "Check that tests weren't weakened", body: "Deleted assertions, skipped tests, code that special-cases test inputs." },
+  { name: "Run held-out checks the author never saw", body: "Especially tests that combine features, where failures tend to hide. The map knows which components interact." },
+  { name: "Only then, judge taste", body: "Naming, structure, fit with the codebase. These count, but less." },
+];
+---
+
+<section class="section wrap judge" aria-labelledby="judge-title">
+  <h2 class="section-title" id="judge-title">Agents apply. A judge verifies.</h2>
+
+  <div class="judge-grid">
+    <div class="prose">
+      <p>
+        Agents don't push changes. They submit applications: the stated intent, the semantic change report,
+        the evidence, the scope they used and any escalations they were granted, and which agent produced it
+        with which model and configuration.
+      </p>
+      <p>
+        A second model reading the code and saying yes or no is a weak judge. Models rate their own outputs
+        higher than outputs people judge equally good,<a class="cite" href="#source-7">7</a> and agents
+        under pressure will edit tests or overload operators to go green.<a class="cite" href="#source-8">8</a>{" "}
+        So the judge mostly re-derives facts instead of giving opinions. It sees the contracts, the map and fresh
+        evidence, but not the author's reasoning, and it can run on a different vendor's model than the author.
+      </p>
+      <p>
+        It can approve, reject with structured reasons the agent can act on, or escalate to a person. Hidden
+        checks, rotating judge configurations and random human audits keep agents from simply learning to
+        pass the judge.
+      </p>
+    </div>
+
+    <ol class="steps">
+      {
+        steps.map((s, i) => (
+          <li class={i === steps.length - 1 ? "is-taste" : ""}>
+            <span class="s-n" aria-hidden="true">{i + 1}</span>
+            <div>
+              <p class="s-name">{s.name}</p>
+              <p class="s-body">{s.body}</p>
+            </div>
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+</section>
+
+<style>
+  .judge-grid {
+    margin-top: 2.25rem;
+    display: grid;
+    gap: 2.5rem;
+  }
+
+  @media (min-width: 62rem) {
+    .judge-grid {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 4rem;
+      align-items: start;
+    }
+  }
+
+  .steps {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    counter-reset: none;
+    display: grid;
+    gap: 0.5rem;
+  }
+
+  .steps li {
+    display: grid;
+    grid-template-columns: 2.5rem 1fr;
+    gap: 0.75rem;
+    background: var(--paper);
+    border: 1px solid var(--rule-paper);
+    border-left: 8px solid var(--cobalt);
+    border-radius: var(--radius-strip);
+    padding: 0.85rem 1rem 0.85rem 0.75rem;
+  }
+
+  .steps li.is-taste {
+    background: transparent;
+    border: 1px dashed var(--rule);
+    border-left: 8px solid var(--rule);
+  }
+
+  .s-n {
+    font-size: 1.6rem;
+    font-stretch: 120%;
+    font-weight: 800;
+    line-height: 1;
+  }
+
+  .s-name {
+    font-weight: 650;
+    line-height: 1.3;
+  }
+
+  .s-body {
+    font-size: 0.9375rem;
+    line-height: 1.45;
+    color: var(--ink-2);
+    margin-top: 0.15rem;
+  }
+</style>
