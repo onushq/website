@@ -1,0 +1,181 @@
+---
+const steps = [
+  { name: "Intent", who: "Person", person: true },
+  { name: "Plan", who: "Planning agent" },
+  { name: "Token", who: "Token service" },
+  { name: "Build", who: "Coding agent" },
+  { name: "Escalate", who: "Agent and judge" },
+  { name: "Apply", who: "Coding agent" },
+  { name: "Route", who: "Classifier" },
+  { name: "Verify", who: "Judge" },
+  { name: "Review", who: "Person", person: true },
+  { name: "Roll out", who: "Production" },
+];
+---
+
+<section class="section attention" aria-labelledby="attention-title">
+  <div class="wrap">
+    <div class="head">
+      <h2 class="display-l" id="attention-title">Two moments of human attention.</h2>
+      <p class="body-l muted">
+        The SMS feature, end to end. Like air traffic controllers, people set the route and step in when
+        something unusual happens. Agents do the rest, and machines check it with evidence at every step.
+      </p>
+    </div>
+
+    <ol class="track">
+      {
+        steps.map((s, i) => (
+          <li class:list={["stop", s.person && "is-person"]}>
+            <span class:list={["o-node", s.person && "o-node--person"]} aria-hidden="true" />
+            <span class="stop-text">
+              <span class="label stop-name">
+                <span class="stop-n">{i + 1}</span> {s.name}
+              </span>
+              <span class="caption muted stop-who">{s.who}</span>
+            </span>
+          </li>
+        ))
+      }
+    </ol>
+
+    <div class="moments">
+      <figure class="moment">
+        <p class="label moment-step"><span class="o-node o-node--person" aria-hidden="true"></span>Step 1, intent</p>
+        <blockquote class="title">
+          “Text customers when their order ships. Respect opt-outs. Only text verified numbers.”
+        </blockquote>
+      </figure>
+      <figure class="moment">
+        <p class="label moment-step"><span class="o-node o-node--person" aria-hidden="true"></span>Step 9, review</p>
+        <blockquote class="title">
+          Reads a one-page summary and approves the new vendor in minutes. Not 1,400 lines.
+        </blockquote>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<style>
+  .head {
+    display: grid;
+    gap: var(--space-5);
+  }
+
+  .head .body-l {
+    max-width: 38rem;
+  }
+
+  .track {
+    position: relative;
+    margin-top: clamp(var(--space-8), 3rem + 4vw, var(--space-10));
+    display: grid;
+    gap: var(--space-4);
+  }
+
+  .track::before {
+    content: "";
+    position: absolute;
+    left: 9px;
+    top: 10px;
+    bottom: 10px;
+    width: 2px;
+    background: var(--line);
+  }
+
+  .stop {
+    position: relative;
+    display: grid;
+    grid-template-columns: 20px 1fr;
+    align-items: center;
+    gap: var(--space-4);
+  }
+
+  .stop .o-node {
+    justify-self: center;
+  }
+
+  .stop-text {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0 var(--space-3);
+  }
+
+  .stop-n {
+    color: var(--ink-muted);
+    margin-right: 0.15em;
+  }
+
+  .is-person .stop-name {
+    font-weight: 700;
+  }
+
+  .moments {
+    margin-top: var(--space-8);
+    display: grid;
+    gap: var(--space-5);
+  }
+
+  @media (min-width: 48rem) {
+    .moments {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  .moment {
+    display: grid;
+    gap: var(--space-4);
+    align-content: start;
+    padding: var(--space-6);
+    border-radius: var(--radius-l);
+    background: var(--signal-soft);
+  }
+
+  .moment-step {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+  }
+
+  .moment-step .o-node {
+    box-shadow: none;
+    width: 14px;
+    height: 14px;
+  }
+
+  blockquote {
+    max-width: 30ch;
+  }
+
+  @media (min-width: 60rem) {
+    .track {
+      grid-template-columns: repeat(10, minmax(0, 1fr));
+      gap: 0;
+    }
+
+    .track::before {
+      left: 5%;
+      right: 5%;
+      top: 9px;
+      bottom: auto;
+      width: auto;
+      height: 2px;
+    }
+
+    .stop {
+      grid-template-columns: 1fr;
+      grid-template-rows: 20px auto;
+      justify-items: center;
+      align-items: center;
+      gap: var(--space-4);
+      text-align: center;
+    }
+
+    .stop-text {
+      flex-direction: column;
+      align-items: center;
+      gap: var(--space-1);
+    }
+  }
+</style>

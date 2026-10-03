@@ -1,7 +1,9 @@
 ---
 import "@fontsource-variable/archivo/standard.css";
-import "@fontsource/fragment-mono/400.css";
-import "../styles/global.css";
+import "@fontsource-variable/geist-mono/index.css";
+import "../styles/tokens.css";
+import "../styles/base.css";
+import "../styles/components.css";
 
 interface Props {
   title: string;
@@ -22,8 +24,8 @@ const canonical = new URL(Astro.url.pathname, site).toString();
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="theme-color" content="#dce3e7" media="(prefers-color-scheme: light)" />
-    <meta name="theme-color" content="#162128" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#f4f6f7" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0b1620" media="(prefers-color-scheme: dark)" />
 
     <meta property="og:type" content="website" />
     <meta property="og:url" content={canonical} />
@@ -33,9 +35,9 @@ const canonical = new URL(Astro.url.pathname, site).toString();
     <meta name="twitter:card" content="summary_large_image" />
 
     <script is:inline>
-      // Play the hero's diff-to-meaning sequence only when motion is welcome.
+      // The hero's one orchestrated moment plays only when motion is welcome.
       if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-        document.documentElement.classList.add("intro");
+        document.documentElement.classList.add("motion");
       }
     </script>
   </head>

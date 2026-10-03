@@ -1,0 +1,11 @@
+---
+import { citeNumber, type SourceId } from "../data/sources";
+
+interface Props {
+  id: SourceId;
+}
+
+const n = citeNumber(Astro.props.id);
+---
+
+<a class="cite" href={`#source-${n}`} aria-label={`Source ${n}`}>{n}</a>

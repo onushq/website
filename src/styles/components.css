@@ -1,0 +1,423 @@
+/*
+  Onus components. This file is published as components/bundle.css in the
+  Onus Design System. Every color, space and radius comes from a token.
+*/
+
+/* ---- Button ---- */
+.o-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  min-height: 44px;
+  padding: 0 var(--space-5);
+  border-radius: var(--radius-pill);
+  border: 1px solid transparent;
+  font-family: var(--font-sans);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  line-height: 1;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+
+.o-button:active {
+  transform: translateY(1px);
+}
+
+.o-button--primary {
+  background: var(--ink);
+  color: var(--canvas);
+}
+
+.o-button--primary:hover {
+  background: var(--ink-muted);
+}
+
+.o-button--quiet {
+  background: transparent;
+  color: var(--ink);
+  border-color: var(--control-border);
+}
+
+.o-button--quiet:hover {
+  border-color: var(--ink);
+}
+
+.band .o-button--primary,
+.o-button--on-band {
+  background: var(--on-band);
+  color: var(--band);
+}
+
+.band .o-button--primary:hover {
+  background: var(--on-band-muted);
+}
+
+/* ---- Pill ---- */
+.o-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+  height: 26px;
+  padding: 0 var(--space-3);
+  border-radius: var(--radius-pill);
+  font-size: 0.8125rem;
+  font-stretch: 85%;
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+  background: var(--sunken);
+  color: var(--ink);
+}
+
+.o-pill--signal {
+  background: var(--signal);
+  color: var(--on-signal);
+}
+
+.o-pill--outline {
+  background: transparent;
+  box-shadow: inset 0 0 0 1px var(--control-border);
+}
+
+.o-pill__dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+/* ---- Window: a floating product surface ---- */
+.o-window {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-m);
+  box-shadow: var(--shadow-window);
+  overflow: hidden;
+}
+
+.o-window__bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3) var(--space-5);
+  padding: var(--space-4) var(--space-5);
+  border-bottom: 1px solid var(--line);
+}
+
+.o-window__title {
+  font-weight: 620;
+  font-size: 1rem;
+  line-height: 1.3;
+}
+
+.o-window__meta {
+  font-size: 0.875rem;
+  color: var(--ink-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.o-diffstat__add {
+  color: var(--add);
+  font-weight: 650;
+}
+
+.o-diffstat__del {
+  color: var(--del);
+  font-weight: 650;
+}
+
+/* ---- Change row: one shift in meaning ---- */
+.o-row {
+  --marker: var(--ink-faint);
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-1);
+  width: 100%;
+  padding: var(--space-4) var(--space-5) var(--space-4) calc(var(--space-5) + 4px);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-s);
+  background: var(--surface);
+  color: var(--ink);
+  text-align: left;
+  font: inherit;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.o-row::before {
+  content: "";
+  position: absolute;
+  left: var(--space-2);
+  top: var(--space-3);
+  bottom: var(--space-3);
+  width: 4px;
+  border-radius: var(--radius-pill);
+  background: var(--marker);
+}
+
+.o-row--signal {
+  --marker: var(--signal);
+  background: var(--signal-soft);
+  border-color: transparent;
+}
+
+.o-row--contract {
+  --marker: var(--ink);
+}
+
+.o-row--edge {
+  --marker: var(--ink-muted);
+}
+
+.o-row__change {
+  font-weight: 620;
+  line-height: 1.35;
+}
+
+.o-row__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 var(--space-3);
+  font-size: 0.9375rem;
+  line-height: 1.45;
+  color: var(--ink-muted);
+}
+
+.o-row__kind {
+  font-stretch: 78%;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+/* ---- Code: a diff excerpt ---- */
+.o-code {
+  margin: 0;
+  padding: var(--space-3) 0;
+  border-radius: var(--radius-s);
+  background: var(--sunken);
+  font-family: var(--font-mono);
+  font-variant-ligatures: none;
+  font-feature-settings: "liga" 0, "calt" 0;
+  font-size: 0.8125rem;
+  line-height: 1.7;
+  overflow-x: auto;
+}
+
+.o-code__line {
+  display: block;
+  padding: 0 var(--space-4);
+  white-space: pre;
+}
+
+.o-code__line--add {
+  background: var(--add-soft);
+}
+
+.o-code__line--del {
+  background: var(--del-soft);
+}
+
+.o-code__line--quiet {
+  color: var(--ink-muted);
+}
+
+/* ---- Lane: where a change is routed ---- */
+.o-lane {
+  display: grid;
+  align-content: start;
+  gap: var(--space-2);
+  padding: var(--space-4);
+  border-radius: var(--radius-s);
+  background: var(--sunken);
+}
+
+.o-lane__name {
+  font-weight: 650;
+  font-stretch: 112%;
+  line-height: 1.2;
+}
+
+.o-lane__who {
+  font-size: 0.8125rem;
+  color: var(--ink-muted);
+  line-height: 1.35;
+  margin-bottom: var(--space-2);
+}
+
+.o-chip {
+  display: block;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-xs);
+  background: var(--surface);
+  font-size: 0.8125rem;
+  line-height: 1.35;
+  box-shadow: inset 0 0 0 1px var(--line);
+}
+
+.o-chip--signal {
+  background: var(--signal);
+  color: var(--on-signal);
+  box-shadow: none;
+  font-weight: 600;
+}
+
+.o-chip--blocked {
+  box-shadow: inset 0 0 0 1px var(--del);
+  color: var(--del);
+}
+
+/* ---- Keycard: a scoped, short-lived token ---- */
+.o-keycard {
+  position: relative;
+  border-radius: var(--radius-m);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow-window);
+  overflow: hidden;
+}
+
+.o-keycard__stripe {
+  height: 40px;
+  background: var(--ink);
+}
+
+.o-keycard__body {
+  padding: var(--space-5);
+}
+
+.o-keycard__task {
+  font-weight: 620;
+  line-height: 1.35;
+}
+
+.o-keycard__scopes {
+  margin-top: var(--space-4);
+  display: grid;
+}
+
+.o-keycard__scope {
+  display: grid;
+  grid-template-columns: 5.5rem 1fr;
+  gap: var(--space-3);
+  padding: var(--space-2) 0;
+  border-top: 1px solid var(--line);
+  font-size: 0.9375rem;
+  line-height: 1.4;
+}
+
+.o-keycard__scope dt {
+  font-stretch: 78%;
+  font-weight: 600;
+  color: var(--ink-muted);
+}
+
+/* ---- Check: one verification step ---- */
+.o-check {
+  display: grid;
+  grid-template-columns: 24px 1fr;
+  gap: var(--space-3);
+  align-items: start;
+  padding: var(--space-3) 0;
+  border-top: 1px solid var(--line);
+}
+
+.o-check__mark {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--ink);
+  color: var(--canvas);
+  display: grid;
+  place-items: center;
+}
+
+.o-check__mark svg {
+  width: 12px;
+  height: 12px;
+}
+
+.o-check--soft .o-check__mark {
+  background: transparent;
+  color: var(--ink-muted);
+  box-shadow: inset 0 0 0 1.5px var(--control-border);
+}
+
+.o-check__name {
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+.o-check__note {
+  font-size: 0.875rem;
+  color: var(--ink-muted);
+  line-height: 1.4;
+}
+
+/* ---- Track: steps of a change, with human moments in signal ---- */
+.o-node {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--ink);
+  box-shadow: 0 0 0 4px var(--canvas);
+}
+
+.o-node--person {
+  width: 20px;
+  height: 20px;
+  background: var(--signal);
+}
+
+/* ---- Bars: compare two magnitudes ---- */
+.o-bars {
+  display: grid;
+  gap: var(--space-5);
+}
+
+.o-bar {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.o-bar__label {
+  font-size: 0.9375rem;
+}
+
+/* The value sits at the bar's tip; set its left to the bar's length. */
+.o-bar__value {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  margin-left: var(--space-3);
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.o-bar__track {
+  position: relative;
+  height: 24px;
+}
+
+.o-bar__fill {
+  height: 100%;
+  border-radius: 0 var(--radius-xs) var(--radius-xs) 0;
+  background: var(--ink);
+}
+
+.o-bar__fill--signal {
+  background: var(--signal);
+}
+
+.band .o-bar__fill {
+  background: var(--on-band);
+}
+
+.band .o-bar__fill--signal {
+  background: var(--signal);
+}

@@ -1,57 +1,86 @@
 ---
 ---
 
-<header class="site-header wrap">
-  <a class="wordmark" href="/" aria-label="Onus home">Onus</a>
-  <nav aria-label="Primary">
-    <ul>
-      <li><a href="#how">How it works</a></li>
-      <li><a href="#roadmap">Roadmap</a></li>
-      <li><a href="https://github.com/onushq">GitHub</a></li>
-    </ul>
-  </nav>
+<header class="site-header" data-header>
+  <div class="wrap bar">
+    <a class="wordmark" href="/" aria-label="Onus home">Onus</a>
+    <nav aria-label="Primary">
+      <ul>
+        <li class="hide-sm"><a href="#how">How it works</a></li>
+        <li class="hide-sm"><a href="#roadmap">Roadmap</a></li>
+        <li><a class="o-button o-button--quiet gh" href="https://github.com/onushq">GitHub</a></li>
+      </ul>
+    </nav>
+  </div>
 </header>
 
 <style>
   .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    background: color-mix(in srgb, var(--canvas) 82%, transparent);
+    -webkit-backdrop-filter: saturate(1.4) blur(14px);
+    backdrop-filter: saturate(1.4) blur(14px);
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.3s ease;
+  }
+
+  .site-header.is-scrolled {
+    border-bottom-color: var(--line);
+  }
+
+  .bar {
     display: flex;
-    align-items: baseline;
+    align-items: center;
     justify-content: space-between;
-    gap: 1rem;
-    padding-block: 1.5rem;
+    gap: var(--space-4);
+    height: 72px;
   }
 
   .wordmark {
-    color: var(--ink);
-    text-decoration: none;
     font-size: 1.5rem;
     font-stretch: 125%;
-    font-weight: 820;
-    letter-spacing: -0.03em;
+    font-weight: 750;
+    letter-spacing: -0.035em;
+    text-decoration: none;
   }
 
   ul {
     display: flex;
-    gap: clamp(0.9rem, 2.5vw, 2rem);
-    list-style: none;
-    padding: 0;
-    margin: 0;
+    align-items: center;
+    gap: clamp(var(--space-4), 2.5vw, var(--space-6));
   }
 
-  nav a {
-    color: var(--ink);
-    text-decoration: none;
-    font-size: 1rem;
+  nav a:not(.o-button) {
+    font-size: 0.9375rem;
     font-weight: 500;
+    text-decoration: none;
+    color: var(--ink-muted);
+    transition: color 0.2s ease;
   }
 
-  nav a:hover {
-    text-decoration: underline;
+  nav a:not(.o-button):hover {
+    color: var(--ink);
   }
 
-  @media (max-width: 30rem) {
-    li:first-child {
+  .gh {
+    min-height: 38px;
+    padding: 0 var(--space-4);
+  }
+
+  @media (max-width: 34rem) {
+    .hide-sm {
       display: none;
     }
   }
 </style>
+
+<script>
+  const header = document.querySelector<HTMLElement>("[data-header]");
+  if (header) {
+    const update = () => header.classList.toggle("is-scrolled", window.scrollY > 8);
+    update();
+    window.addEventListener("scroll", update, { passive: true });
+  }
+</script>

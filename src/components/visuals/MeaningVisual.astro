@@ -1,0 +1,54 @@
+---
+---
+
+<div class="meaning-vis">
+  <div class="case">
+    <div class="o-code">
+      <span class="o-code__line o-code__line--del">- const total = formatOrderTotal(order);</span>
+      <span class="o-code__line o-code__line--add">+ const total = formatTotal(order);</span>
+      <span class="o-code__line o-code__line--quiet">  …and 39 more files</span>
+    </div>
+    <div class="verdict">
+      <p><strong>412 lines changed.</strong> Meaning changed: none.</p>
+      <span class="o-pill">Internal</span>
+    </div>
+  </div>
+  <div class="case">
+    <div class="o-code">
+      <span class="o-code__line o-code__line--del">- if (subtotal &gt; threshold) &#123;</span>
+      <span class="o-code__line o-code__line--add">+ if (subtotal &gt;= threshold) &#123;</span>
+      <span class="o-code__line o-code__line--quiet">    return applyDiscount(order);</span>
+    </div>
+    <div class="verdict">
+      <p><strong>1 character changed.</strong> Every order at the threshold now gets a discount.</p>
+      <span class="o-pill o-pill--signal"><span class="o-pill__dot" aria-hidden="true"></span>Payments</span>
+    </div>
+  </div>
+</div>
+
+<style>
+  .meaning-vis {
+    display: grid;
+    gap: var(--space-4);
+    align-content: center;
+    height: 100%;
+  }
+
+  .case {
+    display: grid;
+    gap: var(--space-3);
+    padding: var(--space-4);
+    border-radius: var(--radius-m);
+    background: var(--surface);
+    box-shadow: inset 0 0 0 1px var(--line);
+  }
+
+  .verdict {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--space-4);
+    font-size: 0.9375rem;
+    line-height: 1.45;
+  }
+</style>

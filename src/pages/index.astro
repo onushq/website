@@ -3,13 +3,9 @@ import Base from "../layouts/Base.astro";
 import Header from "../components/Header.astro";
 import Hero from "../components/Hero.astro";
 import Problem from "../components/Problem.astro";
-import Idea from "../components/Idea.astro";
-import Levels from "../components/Levels.astro";
-import MapDiagram from "../components/MapDiagram.astro";
-import Lanes from "../components/Lanes.astro";
-import Access from "../components/Access.astro";
-import Judge from "../components/Judge.astro";
-import Lifecycle from "../components/Lifecycle.astro";
+import Thesis from "../components/Thesis.astro";
+import HowItWorks from "../components/HowItWorks.astro";
+import Attention from "../components/Attention.astro";
 import Agents from "../components/Agents.astro";
 import Roadmap from "../components/Roadmap.astro";
 import Closing from "../components/Closing.astro";
@@ -17,21 +13,17 @@ import Closing from "../components/Closing.astro";
 
 <Base
   title="Onus | Code is not the product"
-  description="Onus is the layer every coding agent works through: it reads each change for what it means, routes it by risk, and approves it on evidence instead of line-by-line review."
+  description="Onus is the layer every coding agent works through. It reads each change for what it means, routes it by risk, and approves it on evidence instead of line-by-line review."
 >
   <Header />
   <main id="main">
     <Hero />
     <Problem />
-    <Idea />
-    <Levels />
-    <MapDiagram />
-    <Lanes />
-    <Access />
-    <Judge />
-    <Lifecycle />
+    <Thesis />
+    <HowItWorks />
+    <Attention />
     <Agents />
     <Roadmap />
-    <Closing />
   </main>
+  <Closing />
 </Base>

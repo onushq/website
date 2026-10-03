@@ -1,14 +1,14 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
   <style>
-    .card { fill: #132330; }
-    .band { fill: #d9b54a; }
-    .ring { fill: none; stroke: #faf9f5; }
+    .card { fill: #0b1a24; }
+    .band { fill: #ffb224; }
+    .ring { fill: none; stroke: #f4f6f7; }
     @media (prefers-color-scheme: dark) {
-      .card { fill: #e6ecef; }
-      .ring { stroke: #132330; }
+      .card { fill: #eef2f4; }
+      .ring { stroke: #0b1a24; }
     }
   </style>
-  <rect class="card" x="1" y="4" width="30" height="24" rx="4" />
-  <rect class="band" x="1" y="4" width="7" height="24" rx="2" />
+  <rect class="card" x="1" y="4" width="30" height="24" rx="5" />
+  <rect class="band" x="1" y="4" width="8" height="24" rx="3" />
   <circle class="ring" cx="19.5" cy="16" r="6" stroke-width="3.5" />
 </svg>

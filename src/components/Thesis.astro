@@ -1,0 +1,71 @@
+---
+const durable = [
+  { name: "Contracts", body: "What each component promises: inputs, outputs, side effects and invariants. People own these." },
+  { name: "Evidence", body: "Tests, traces and benchmarks showing the promises hold. Machines produce it and re-run it constantly." },
+  { name: "The map", body: "How components relate: who calls whom, what data flows where, who owns what. Derived from code." },
+];
+---
+
+<section class="section thesis" aria-labelledby="thesis-title">
+  <div class="wrap">
+    <h2 class="visually-hidden" id="thesis-title">The idea</h2>
+    <p class="display-m statement">
+      Changes should be understood as shifts in meaning, scored by risk, and approved by evidence rather
+      than by someone reading lines.
+    </p>
+    <div class="durable">
+      <p class="body-l muted intro">
+        Users never see code. They see behavior. So the source of truth moves to three things that outlive
+        any version of the code, and agents can rewrite the rest freely.
+      </p>
+      <dl class="list">
+        {
+          durable.map((d) => (
+            <div>
+              <dt class="title">{d.name}</dt>
+              <dd class="muted">{d.body}</dd>
+            </div>
+          ))
+        }
+      </dl>
+    </div>
+  </div>
+</section>
+
+<style>
+  .statement {
+    max-width: 24ch;
+  }
+
+  .durable {
+    margin-top: clamp(var(--space-8), 3rem + 4vw, var(--space-10));
+    display: grid;
+    gap: var(--space-7);
+  }
+
+  @media (min-width: 62rem) {
+    .durable {
+      grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+      gap: var(--space-9);
+    }
+  }
+
+  .intro {
+    max-width: 30rem;
+  }
+
+  .list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr));
+    gap: var(--space-6);
+  }
+
+  .list > div {
+    padding-top: var(--space-4);
+    border-top: 2px solid var(--ink);
+  }
+
+  dd {
+    margin-top: var(--space-2);
+  }
+</style>

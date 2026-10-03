@@ -1,145 +1,71 @@
 ---
 const asks = [
-  { name: "Speak MCP or run a CLI.", body: "Any agent that can run a shell command can use the CLI; agents that support MCP get the same tools natively." },
-  { name: "Work inside the token it's given.", body: "And ask for more through escalation, with evidence." },
-  { name: "Submit changes as applications.", body: "With the intent stated and the evidence attached." },
-];
-const jobs = [
-  { name: "Set intent", body: "Decide what to build and why, and what “done” means." },
-  { name: "Own contracts", body: "Define and approve the promises components make." },
-  { name: "Set risk policy", body: "Decide which areas are sensitive and which rules are hard floors." },
-  { name: "Review what matters", body: "High-risk semantic changes, new outside dependencies, and the rules of the game." },
-  { name: "Audit", body: "Regularly sample work that was approved without a person." },
-  { name: "Own outcomes", body: "When something slips through, fix the system, not just the bug." },
+  { name: "Speak MCP or run a CLI", body: "Any agent that can run a shell command can use Onus. Agents that support MCP get the same tools natively." },
+  { name: "Work inside its token", body: "And ask for more through escalation, with evidence attached." },
+  { name: "Submit evidence with every change", body: "The stated intent, the semantic report, and the tests and traces behind it." },
 ];
 ---
 
-<section class="section wrap agents" aria-labelledby="agents-title">
-  <h2 class="section-title" id="agents-title">Bring your own agent.</h2>
-  <div class="agents-grid">
-    <div class="prose">
-      <p>
-        Onus is not an agent, and it doesn't pick one for you. Teams bring the agents they already use,
-        whether that's Codex, Claude Code or something they built themselves, and Onus governs all of them the
-        same way. It already assumes any agent might be confused or tricked, so it never relies on what happens
-        inside one. Every check lives in the doors, the tokens, the environments and the judge.
-      </p>
-      <p>
-        Trust is earned per setup, not per brand. Track records attach to the tool, model, configuration and
-        team running it, and a new setup starts in stricter lanes until its results earn it faster ones.
+<section class="section agents" aria-labelledby="agents-title">
+  <div class="wrap">
+    <div class="top">
+      <h2 class="display-l" id="agents-title">Any agent. Same rules.</h2>
+      <p class="body-l muted">
+        Onus isn't an agent and doesn't pick one for you. Codex, Claude Code or one you built yourself: each
+        gets the same scopes, lanes and review, and earns its own track record.
       </p>
     </div>
-    <div class="asks">
-      <p class="subhead">Everything Onus asks of an agent</p>
-      <ul role="list">
-        {
-          asks.map((a) => (
-            <li>
-              <strong>{a.name}</strong> {a.body}
-            </li>
-          ))
-        }
-      </ul>
-      <p class="muted">No required SDK, no special model, no fine-tuning.</p>
-    </div>
-  </div>
-
-  <p class="swap">
-    If a team swapped every agent it uses overnight, none of the rules, lanes or review surfaces should need
-    to change. Only the track records would start fresh.
-  </p>
-
-  <div class="humans">
-    <div class="prose">
-      <h3 class="subhead">The people stay in charge</h3>
-      <p>
-        People stop being typists and line readers and become owners of intent, contracts and risk. Air traffic
-        controllers are a good model: they don't fly the planes. They set routes, keep planes apart, and step in
-        when something unusual happens.
-      </p>
-    </div>
-    <dl class="jobs">
+    <ul class="asks">
       {
-        jobs.map((j) => (
-          <div>
-            <dt>{j.name}</dt>
-            <dd>{j.body}</dd>
-          </div>
+        asks.map((a) => (
+          <li>
+            <h3 class="title">{a.name}</h3>
+            <p class="muted">{a.body}</p>
+          </li>
         ))
       }
-    </dl>
+    </ul>
+    <p class="swap display-s">
+      Swap every agent overnight and nothing in Onus changes. Only the track records start fresh.
+    </p>
   </div>
 </section>
 
 <style>
-  .agents-grid {
-    margin-top: 2.25rem;
+  .top {
     display: grid;
-    gap: 2.5rem;
+    gap: var(--space-5);
   }
 
   @media (min-width: 62rem) {
-    .agents-grid {
-      grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
-      gap: 4rem;
+    .top {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      align-items: end;
+      gap: var(--space-9);
     }
   }
 
-  .asks ul {
-    list-style: none;
-    padding: 0;
-    margin: 1rem 0;
+  .top .body-l {
+    max-width: 32rem;
+  }
+
+  .asks {
+    margin-top: clamp(var(--space-8), 3rem + 3vw, var(--space-9));
     display: grid;
-    gap: 0.5rem;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
+    gap: var(--space-6);
   }
 
   .asks li {
-    background: var(--paper);
-    border: 1px solid var(--rule-paper);
-    border-left: 8px solid var(--ink);
-    border-radius: var(--radius-strip);
-    padding: 0.75rem 1rem;
-    font-size: 0.9875rem;
-    line-height: 1.45;
+    display: grid;
+    gap: var(--space-2);
+    align-content: start;
+    padding-top: var(--space-5);
+    border-top: 2px solid var(--ink);
   }
 
   .swap {
-    margin-top: clamp(2.5rem, 1.5rem + 3vw, 4rem);
-    font-size: clamp(1.4rem, 1rem + 1.6vw, 2.2rem);
-    font-stretch: 108%;
-    font-weight: 650;
-    line-height: 1.18;
-    letter-spacing: -0.015em;
+    margin-top: clamp(var(--space-8), 3rem + 3vw, var(--space-9));
     max-width: 30ch;
-  }
-
-  .humans {
-    margin-top: clamp(3rem, 2rem + 3vw, 4.5rem);
-    display: grid;
-    gap: 2rem;
-  }
-
-  @media (min-width: 62rem) {
-    .humans {
-      grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
-      gap: 4rem;
-    }
-  }
-
-  .jobs {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr));
-    gap: 1.25rem 2rem;
-  }
-
-  .jobs dt {
-    font-weight: 700;
-  }
-
-  .jobs dd {
-    color: var(--ink-2);
-    font-size: 0.9875rem;
-    line-height: 1.45;
-    margin-top: 0.2rem;
   }
 </style>

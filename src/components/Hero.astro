@@ -1,549 +1,389 @@
 ---
-import { diffLines, prTitle, remaining, totals } from "../data/diff";
+import { changes, files, prTitle, totals } from "../data/pr";
 
 const fmt = new Intl.NumberFormat("en-US");
-
-const report = [
-  {
-    change: "notifications now calls an external SMS provider",
-    kind: "New external dependency",
-    why: "Customer phone numbers leave the system",
-    band: "person",
-  },
-  {
-    change: "UserPreferences gains an optional phoneVerified field",
-    kind: "Contract change, additive",
-    why: "Shared contract; existing callers unaffected",
-    band: "contract",
-  },
-  {
-    change: "notifications subscribes to the OrderShipped event",
-    kind: "New event consumer",
-    why: "Additive; orders itself is unchanged",
-    band: "edge",
-  },
-  {
-    change: "About 1,400 lines of new code and tests inside notifications",
-    kind: "Internal",
-    why: "No other component touched",
-    band: "internal",
-  },
-];
+const changed = totals.add + totals.del;
+const minimapData = JSON.stringify(files.map((f) => [f.add, f.del, f.meaning]));
 ---
 
-<section class="hero wrap" aria-labelledby="hero-title">
-  <h1 id="hero-title">Code is not the product.</h1>
-  <p class="lede hero-lede">
-    Agents now write code faster than any team can read it. Onus is the layer every coding agent
-    works through: it reads each change for what it means, routes it by risk, and approves it on
-    evidence instead of on someone pretending to review 2,000 lines.
-  </p>
-
-  <figure class="pr" data-pr>
-    <div class="pr-bar">
-      <div class="pr-title">
-        <p class="pr-name">{prTitle}</p>
-        <p class="pr-meta">
-          Opened by a coding agent. <span class="add">+{fmt.format(totals.added)}</span>{" "}
-          <span class="del">−{fmt.format(totals.removed)}</span> in {totals.files} files.
-        </p>
-      </div>
-      <div class="toggle" role="group" aria-label="View this pull request as">
-        <button type="button" data-view="lines" aria-pressed="false">Lines</button>
-        <button type="button" data-view="meaning" aria-pressed="true">Meaning</button>
+<section class="hero" aria-labelledby="hero-title">
+  <div class="wrap">
+    <h1 class="display-xl" id="hero-title">
+      <span>Code is not</span>
+      <span>the product.</span>
+    </h1>
+    <div class="hero-foot">
+      <p class="body-l lede">
+        Agents now write code faster than anyone can read it. Onus is the layer every coding agent works
+        through. It reads each change for what it means, routes it by risk, and approves it on evidence.
+      </p>
+      <div class="ctas">
+        <a class="o-button o-button--primary" href="#how">See how it works</a>
+        <a class="o-button o-button--quiet" href="https://github.com/onushq">Follow on GitHub</a>
       </div>
     </div>
+  </div>
 
-    <div class="views" data-state="meaning">
-      <div class="view view-lines" data-lines tabindex="0" aria-label="Line-by-line diff">
-        <ol class="diff" data-diff>
-          {
-            diffLines.map((l) => (
-              <li class={`d d-${l.kind}`}>
-                {l.kind === "add" && <span class="sign" aria-hidden="true">+</span>}
-                {l.kind === "del" && <span class="sign" aria-hidden="true">−</span>}
-                {l.kind === "ctx" && <span class="sign" aria-hidden="true" />}
-                <span class="code">{l.text}</span>
-              </li>
-            ))
-          }
-          <li class="d d-more">
-            {fmt.format(remaining.lines)} more changed lines in {remaining.files} more files
-          </li>
-        </ol>
-      </div>
-
-      <div class="view view-meaning" data-meaning>
-        <div class="report-head">
-          <p class="report-count">4 changes in meaning</p>
-          <p class="report-route">1 needs a person</p>
+  <div class="wrap stage">
+    <figure class="o-window report" data-report>
+      <div class="o-window__bar">
+        <div>
+          <p class="o-window__title">{prTitle}</p>
+          <p class="o-window__meta">Pull request opened by a coding agent</p>
         </div>
-        <div class="report-cols" aria-hidden="true">
-          <span>Change</span><span>Kind</span><span>Why it matters</span>
-        </div>
-        <ul class="report" role="list">
-          {
-            report.map((r, i) => (
-              <li class={`strip row band-${r.band} ${r.band === "person" ? "is-person" : ""}`} style={`--i:${i}`}>
-                <span class="f f-change">{r.change}</span>
-                <span class="f f-kind">{r.kind}</span>
-                <span class="f f-why">{r.why}</span>
-              </li>
-            ))
-          }
-        </ul>
-        <p class="route">
-          <span class="route-mark" aria-hidden="true"></span>
-          Routed to a person: a new outside vendor will receive customers' phone numbers.
+        <p class="o-window__meta">
+          <span class="o-diffstat__add">+{fmt.format(totals.add)}</span>{" "}
+          <span class="o-diffstat__del">−{fmt.format(totals.del)}</span> in {totals.files} files
         </p>
       </div>
-    </div>
-  </figure>
-  <p class="caption hero-caption">
-    An illustrative report for the manifesto's example feature. A reviewer reads four rows instead of
-    1,400 lines, and the row that deserves their attention comes first.
-  </p>
+
+      <div class="report-body">
+        <div class="lines">
+          <p class="label lines-count">
+            <span data-count>{fmt.format(changed)}</span> changed lines
+          </p>
+          <div class="minimap-box">
+            <canvas data-minimap aria-hidden="true"></canvas>
+          </div>
+          <p class="caption muted key">
+            <span class="swatch swatch-add" aria-hidden="true"></span>Added
+            <span class="swatch swatch-del" aria-hidden="true"></span>Removed
+          </p>
+        </div>
+
+        <div class="meaning">
+          <div class="meaning-head">
+            <p class="label">4 changes in meaning</p>
+            <span class="o-pill o-pill--signal"><span class="o-pill__dot" aria-hidden="true"></span>1 needs a person</span>
+          </div>
+          <ul class="rows">
+            {
+              changes.map((c, i) => (
+                <li style={`--i:${i}`}>
+                  <button
+                    type="button"
+                    class:list={[
+                      "o-row",
+                      c.person && "o-row--signal",
+                      c.id === "contract" && "o-row--contract",
+                      c.id === "event" && "o-row--edge",
+                    ]}
+                    data-meaning={c.id}
+                    aria-pressed="false"
+                  >
+                    <span class="o-row__change">{c.change}</span>
+                    <span class="o-row__meta">
+                      <span class="o-row__kind">{c.kind}</span>
+                      <span>{c.why}</span>
+                    </span>
+                  </button>
+                </li>
+              ))
+            }
+          </ul>
+          <p class="route caption muted">
+            Routed to a person: a new outside vendor will receive customers' phone numbers.
+          </p>
+        </div>
+      </div>
+    </figure>
+    <p class="caption muted hint">
+      Point at a change to see the lines behind it. An illustrative report for the manifesto's example
+      feature.
+    </p>
+  </div>
+  <script is:inline type="application/json" data-pr-files set:html={minimapData} />
 </section>
 
 <style>
   .hero {
-    padding-top: clamp(2.5rem, 1rem + 6vw, 6.5rem);
+    padding-top: clamp(var(--space-8), 3rem + 7vw, var(--space-11));
   }
 
-  h1 {
-    font-size: clamp(3.1rem, 0.9rem + 9.2vw, 8.6rem);
-    font-stretch: 125%;
-    font-weight: 820;
-    line-height: 0.9;
-    letter-spacing: -0.04em;
-    max-width: 11ch;
+  h1 span {
+    display: block;
   }
 
-  .hero-lede {
-    margin-top: clamp(1.5rem, 1rem + 1.5vw, 2.5rem);
+  .hero-foot {
+    margin-top: clamp(var(--space-6), 1rem + 3vw, var(--space-8));
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: var(--space-6) var(--space-8);
   }
 
-  /* ---- Pull request panel ---- */
-  .pr {
-    margin-top: clamp(2.5rem, 1.5rem + 3vw, 4.5rem);
-    background: var(--paper);
-    border: 1px solid var(--rule);
-    border-radius: var(--radius-panel);
-    overflow: hidden;
+  .lede {
+    max-width: 36rem;
+    color: var(--ink-muted);
   }
 
-  .pr-bar {
+  .ctas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+  }
+
+  .stage {
+    margin-top: clamp(var(--space-8), 2rem + 6vw, var(--space-10));
+  }
+
+  .report-body {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  @media (min-width: 60rem) {
+    .report-body {
+      grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
+    }
+
+    .lines {
+      border-right: 1px solid var(--line);
+    }
+  }
+
+  .lines,
+  .meaning {
+    padding: clamp(var(--space-5), 1rem + 1.5vw, var(--space-7));
+    min-width: 0;
+  }
+
+  .lines {
+    display: grid;
+    align-content: start;
+    gap: var(--space-4);
+  }
+
+  .lines-count {
+    color: var(--ink-muted);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .minimap-box {
+    background: var(--sunken);
+    border-radius: var(--radius-s);
+    padding: var(--space-4);
+  }
+
+  canvas {
+    width: 100%;
+  }
+
+  .key {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+  }
+
+  .swatch {
+    width: 10px;
+    height: 10px;
+    border-radius: 2px;
+  }
+
+  .swatch-add {
+    background: var(--add);
+  }
+
+  .swatch-del {
+    background: var(--del);
+    margin-left: var(--space-3);
+  }
+
+  .meaning-head {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     justify-content: space-between;
-    gap: 1rem 1.5rem;
-    padding: 1.1rem clamp(1rem, 0.6rem + 1.5vw, 1.6rem);
-    border-bottom: 1px solid var(--rule-paper);
+    gap: var(--space-3);
+    margin-bottom: var(--space-4);
   }
 
-  .pr-name {
-    font-weight: 650;
-    font-size: 1.125rem;
-    line-height: 1.3;
+  .meaning-head .label {
+    color: var(--ink-muted);
   }
 
-  .pr-meta {
-    font-size: 0.9375rem;
-    color: var(--ink-2);
-    font-variant-numeric: tabular-nums;
+  .rows {
+    display: grid;
+    gap: var(--space-2);
   }
 
-  .add {
-    color: var(--add);
-    font-weight: 650;
-  }
-
-  .del {
-    color: var(--del);
-    font-weight: 650;
-  }
-
-  .toggle {
-    display: inline-flex;
-    padding: 3px;
-    background: var(--paper-2);
-    border: 1px solid var(--rule-paper);
-    border-radius: 999px;
-  }
-
-  .toggle button {
-    font: inherit;
-    font-size: 0.9375rem;
-    font-weight: 600;
-    color: var(--ink-2);
-    background: transparent;
-    border: 0;
-    border-radius: 999px;
-    padding: 0.35rem 1rem;
+  .o-row {
     cursor: pointer;
   }
 
-  .toggle button[aria-pressed="true"] {
-    background: var(--ink);
-    color: var(--paper);
+  .o-row:hover,
+  .o-row[aria-pressed="true"] {
+    border-color: var(--control-border);
   }
 
-  /* Both views share one grid cell, so the panel is as tall as the taller one. */
-  .views {
-    display: grid;
-  }
-
-  .view {
-    grid-area: 1 / 1;
-    transition:
-      opacity 0.45s ease,
-      transform 0.55s cubic-bezier(0.6, 0, 0.3, 1),
-      visibility 0s linear 0.55s;
-  }
-
-  .views[data-state="meaning"] .view-lines,
-  .views[data-state="lines"] .view-meaning {
-    opacity: 0;
-    visibility: hidden;
-  }
-
-  .views[data-state="lines"] .view-lines,
-  .views[data-state="meaning"] .view-meaning {
-    transition-delay: 0s;
-  }
-
-  .views[data-state="meaning"] .view-lines {
-    transform: scaleY(0.04);
-    transform-origin: 50% 0;
-  }
-
-  /* ---- Lines view ---- */
-  .view-lines {
-    height: 100%;
-    min-height: 24rem;
-    max-height: 30rem;
-    overflow: auto;
-    background: var(--paper);
-    overscroll-behavior: contain;
-  }
-
-  .diff {
-    list-style: none;
-    padding: 0.5rem 0 0;
-    margin: 0;
-    font-family: var(--mono);
-    font-size: 0.8125rem;
-    line-height: 1.6;
-  }
-
-  .d {
-    display: grid;
-    grid-template-columns: 2rem 1fr;
-    white-space: pre;
-    padding-right: 1rem;
-  }
-
-  .sign {
-    text-align: center;
-    color: var(--ink-2);
-    user-select: none;
-  }
-
-  .d-add {
-    background: var(--add-bg);
-  }
-
-  .d-add .sign {
-    color: var(--add);
-  }
-
-  .d-del {
-    background: var(--del-bg);
-  }
-
-  .d-del .sign {
-    color: var(--del);
-  }
-
-  .d-file {
-    display: block;
-    font-family: var(--sans);
-    font-weight: 600;
-    font-size: 0.875rem;
-    padding: 0.55rem 1rem;
-    margin-top: 0.75rem;
-    background: var(--paper-2);
-    border-block: 1px solid var(--rule-paper);
-  }
-
-  .d-file:first-child {
-    margin-top: 0;
-  }
-
-  .d-hunk {
-    display: block;
-    color: var(--ink-2);
-    padding: 0.2rem 1rem;
-  }
-
-  .d-more {
-    display: block;
-    font-family: var(--sans);
-    color: var(--ink-2);
-    padding: 1rem;
-    margin-top: 0.75rem;
-    border-top: 1px solid var(--rule-paper);
-  }
-
-  /* ---- Meaning view ---- */
-  .view-meaning {
-    padding: clamp(1rem, 0.6rem + 1.5vw, 1.6rem);
-  }
-
-  .report-head {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    gap: 0.25rem 1rem;
-    margin-bottom: 1rem;
-  }
-
-  .report-count {
-    font-size: clamp(1.35rem, 1.1rem + 1vw, 1.75rem);
-    font-stretch: 115%;
-    font-weight: 760;
-    letter-spacing: -0.015em;
-  }
-
-  .report-route {
-    align-self: center;
-    font-size: 0.9375rem;
-    font-weight: 600;
-    padding: 0.15rem 0.6rem;
-    border-radius: 999px;
-    background: var(--buff);
-    box-shadow: inset 0 0 0 1px var(--buff-band);
-  }
-
-  .report-cols,
-  .row {
-    display: grid;
-    grid-template-columns: 1.55fr 1fr 1.3fr;
-  }
-
-  .report-cols {
-    padding: 0 0 0.4rem 8px;
-    font-size: 0.8125rem;
-    font-weight: 600;
-    color: var(--ink-2);
-  }
-
-  .report-cols span {
-    padding-inline: 1rem;
-  }
-
-  .report {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: grid;
-    gap: 0.5rem;
-  }
-
-  .band-contract {
-    --band: var(--cobalt);
-  }
-
-  .band-edge {
-    --band: var(--cobalt-soft);
-  }
-
-  .band-internal {
-    --band: var(--rule);
-  }
-
-  .f {
-    padding: 0.85rem 1rem;
-    line-height: 1.35;
-  }
-
-  .f + .f {
-    border-left: 1px solid var(--rule-paper);
-  }
-
-  .is-person .f + .f {
-    border-left-color: color-mix(in srgb, var(--buff-band) 45%, transparent);
-  }
-
-  .f-change {
-    font-weight: 600;
-  }
-
-  .f-kind {
-    font-stretch: 82%;
-    font-weight: 560;
+  .o-row--signal:hover,
+  .o-row--signal[aria-pressed="true"] {
+    border-color: var(--signal);
   }
 
   .route {
-    display: flex;
-    align-items: baseline;
-    gap: 0.6rem;
-    margin-top: 1.1rem;
-    font-size: 0.9375rem;
-    color: var(--ink-2);
+    margin-top: var(--space-4);
   }
 
-  .route-mark {
-    flex: none;
-    width: 0.7rem;
-    height: 0.7rem;
-    background: var(--buff-band);
-    border-radius: 2px;
-    transform: translateY(0.05rem);
+  .hint {
+    margin-top: var(--space-4);
   }
 
-  .hero-caption {
-    margin-top: 0.9rem;
+  /* The one orchestrated moment: the lines pour in, then the meaning arrives. */
+  :global(html.motion) .rows li {
+    animation: row-in 0.6s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+    animation-delay: calc(1.05s + var(--i) * 0.09s);
   }
 
-  @media (max-width: 46rem) {
-    .report-cols {
-      display: none;
-    }
-
-    .row {
-      grid-template-columns: 1fr;
-    }
-
-    .f {
-      padding: 0.15rem 0.9rem;
-    }
-
-    .f-change {
-      padding-top: 0.75rem;
-    }
-
-    .f-why {
-      padding-bottom: 0.75rem;
-      color: var(--ink-2);
-    }
-
-    .f + .f,
-    .is-person .f + .f {
-      border-left: 0;
-    }
+  :global(html.motion) .meaning-head,
+  :global(html.motion) .route {
+    animation: row-in 0.6s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+    animation-delay: 0.95s;
   }
 
-  /* ---- The one orchestrated moment: lines scroll past, then collapse into meaning ---- */
-  /* Hold the line view from first paint until the script takes over, so nothing flashes. */
-  :global(html.intro) .views:not([data-ready]) .view-lines {
-    opacity: 1;
-    visibility: visible;
-    transform: none;
-  }
-
-  :global(html.intro) .views:not([data-ready]) .view-meaning {
-    opacity: 0;
-    visibility: hidden;
-  }
-
-  :global(html.intro) .views.is-intro .view-lines {
-    overflow: hidden;
-  }
-
-  :global(html.intro) .views.is-intro .diff {
-    transition: transform 2.6s cubic-bezier(0.45, 0, 0.25, 1);
-  }
-
-  :global(html.intro) .views[data-state="meaning"] .row {
-    animation: strip-in 0.5s cubic-bezier(0.2, 0.7, 0.2, 1) both;
-    animation-delay: calc(0.25s + var(--i) * 0.09s);
-  }
-
-  @keyframes strip-in {
+  @keyframes row-in {
     from {
       opacity: 0;
-      transform: translateY(10px);
-    }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .view,
-    .diff {
-      transition: none !important;
+      transform: translateY(12px);
     }
   }
 </style>
 
 <script>
-  const panel = document.querySelector<HTMLElement>("[data-pr]");
-  if (panel) setUpPanel(panel);
+  type Meaning = "vendor" | "contract" | "event" | "internal";
+  interface Line {
+    m: Meaning;
+    add: boolean;
+    len: number;
+    ind: number;
+  }
 
-  function setUpPanel(panel: HTMLElement) {
-    const views = panel.querySelector<HTMLElement>(".views")!;
-    const lines = panel.querySelector<HTMLElement>("[data-lines]")!;
-    const diff = panel.querySelector<HTMLElement>("[data-diff]")!;
-    const buttons = Array.from(panel.querySelectorAll<HTMLButtonElement>("[data-view]"));
-    const timers: number[] = [];
-    let introRunning = false;
+  const report = document.querySelector<HTMLElement>("[data-report]");
+  const dataEl = document.querySelector<HTMLScriptElement>("[data-pr-files]");
+  if (report && dataEl) setUp(report, JSON.parse(dataEl.textContent ?? "[]"));
 
-    const show = (view: "lines" | "meaning") => {
-      views.dataset.state = view;
-      for (const b of buttons) b.setAttribute("aria-pressed", String(b.dataset.view === view));
+  function setUp(report: HTMLElement, data: [number, number, Meaning][]) {
+    const canvas = report.querySelector<HTMLCanvasElement>("[data-minimap]")!;
+    const count = report.querySelector<HTMLElement>("[data-count]")!;
+    const ctx = canvas.getContext("2d")!;
+    const buttons = Array.from(report.querySelectorAll<HTMLButtonElement>("[data-meaning]"));
+
+    // Deterministic "code-shaped" lines: indentation drifts, lengths vary.
+    let seed = 20260928;
+    const rand = () => {
+      seed |= 0;
+      seed = (seed + 0x6d2b79f5) | 0;
+      let t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
+      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+    const lines: (Line | null)[] = [];
+    data.forEach(([add, del, m], fileIndex) => {
+      if (fileIndex > 0) lines.push(null, null, null);
+      let ind = 0;
+      for (let i = 0; i < add + del; i++) {
+        const r = rand();
+        if (r < 0.2 && ind < 4) ind++;
+        else if (r < 0.4 && ind > 0) ind--;
+        const len = rand() < 0.08 ? 0.12 : 0.28 + rand() * 0.68;
+        lines.push({ m, add: i >= del, len, ind });
+      }
+    });
+    const totalChanged = lines.filter(Boolean).length;
+
+    let highlight: Meaning | null = null;
+    let pinned: Meaning | null = null;
+    let revealed = 1;
+    let geometry = { cols: 8, colW: 40, gap: 10, rowH: 2.2, rows: 1 };
+
+    const tokens = () => {
+      const s = getComputedStyle(report);
+      return {
+        add: s.getPropertyValue("--add").trim(),
+        del: s.getPropertyValue("--del").trim(),
+        signal: s.getPropertyValue("--signal").trim(),
+      };
     };
 
-    const endIntro = () => {
-      if (!introRunning) return;
-      introRunning = false;
-      timers.forEach(clearTimeout);
-      views.classList.remove("is-intro");
-      diff.style.transform = "";
+    const layout = () => {
+      const width = canvas.parentElement!.clientWidth - 32;
+      const cols = width >= 520 ? 10 : width >= 330 ? 8 : 6;
+      const gap = width >= 400 ? 10 : 7;
+      const colW = (width - gap * (cols - 1)) / cols;
+      const rows = Math.ceil(lines.length / cols);
+      const rowH = 2.2;
+      geometry = { cols, colW, gap, rowH, rows };
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      canvas.style.height = `${rows * rowH}px`;
+      canvas.width = Math.round(width * dpr);
+      canvas.height = Math.round(rows * rowH * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    };
+
+    const draw = () => {
+      const { colW, gap, rowH, rows } = geometry;
+      const c = tokens();
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      const limit = Math.floor(lines.length * revealed);
+      for (let i = 0; i < limit; i++) {
+        const l = lines[i];
+        if (!l) continue;
+        const col = Math.floor(i / rows);
+        const row = i % rows;
+        const lit = highlight === null || highlight === l.m;
+        const indent = l.ind * 0.08;
+        const x = col * (colW + gap) + colW * indent;
+        const w = Math.max(2, l.len * colW * (1 - indent));
+        ctx.globalAlpha = lit ? 1 : 0.14;
+        ctx.fillStyle = highlight === "vendor" && lit ? c.signal : l.add ? c.add : c.del;
+        ctx.fillRect(x, row * rowH, w, rowH * 0.6);
+      }
+      ctx.globalAlpha = 1;
+    };
+
+    const setHighlight = (m: Meaning | null) => {
+      highlight = m;
+      draw();
     };
 
     for (const b of buttons) {
+      const m = b.dataset.meaning as Meaning;
+      b.addEventListener("pointerenter", () => setHighlight(m));
+      b.addEventListener("focus", () => setHighlight(m));
+      b.addEventListener("pointerleave", () => setHighlight(pinned));
+      b.addEventListener("blur", () => setHighlight(pinned));
       b.addEventListener("click", () => {
-        endIntro();
-        show(b.dataset.view as "lines" | "meaning");
+        pinned = pinned === m ? null : m;
+        for (const other of buttons) other.setAttribute("aria-pressed", String(other.dataset.meaning === pinned));
+        setHighlight(pinned ?? m);
       });
     }
-    lines.addEventListener("wheel", endIntro, { passive: true });
-    lines.addEventListener("touchstart", endIntro, { passive: true });
 
-    if (!document.documentElement.classList.contains("intro")) {
-      views.dataset.ready = "";
-      return;
+    layout();
+    const fmt = new Intl.NumberFormat("en-US");
+
+    if (document.documentElement.classList.contains("motion")) {
+      revealed = 0;
+      const start = performance.now() + 150;
+      const duration = 1300;
+      const tick = (now: number) => {
+        const p = Math.min(1, Math.max(0, (now - start) / duration));
+        revealed = 1 - Math.pow(1 - p, 3);
+        count.textContent = fmt.format(Math.round(totalChanged * revealed));
+        draw();
+        if (p < 1) requestAnimationFrame(tick);
+      };
+      requestAnimationFrame(tick);
+    } else {
+      draw();
     }
 
-    // Start in the line-by-line view, let it scroll past, then collapse to meaning.
-    introRunning = true;
-    views.classList.add("is-intro");
-    show("lines");
-    views.dataset.ready = "";
-
-    const start = () => {
-      if (!introRunning) return;
-      const distance = Math.max(0, diff.scrollHeight - lines.clientHeight);
-      timers.push(
-        window.setTimeout(() => {
-          diff.style.transform = `translateY(-${distance}px)`;
-        }, 500),
-        window.setTimeout(() => {
-          show("meaning");
-          timers.push(window.setTimeout(endIntro, 600));
-        }, 3300),
-      );
-    };
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries.some((e) => e.isIntersecting)) {
-          observer.disconnect();
-          start();
-        }
-      },
-      { threshold: 0.35 },
-    );
-    observer.observe(panel);
+    new ResizeObserver(() => {
+      layout();
+      draw();
+    }).observe(canvas.parentElement!);
+    window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", draw);
   }
 </script>

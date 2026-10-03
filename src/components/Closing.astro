@@ -1,122 +1,120 @@
 ---
-const sources = [
-  { title: "SmartBear, Best Practices for Code Review (the Cisco review-size study)", url: "https://smartbear.com/learn/code-review/best-practices-for-peer-code-review/" },
-  { title: "He et al., AI Writes Faster Than Humans Can Review: A Longitudinal Study of an Enterprise “2×” Mandate, July 2026", url: "https://arxiv.org/abs/2607.01904" },
-  { title: "Zhao et al., SpecBench: Measuring Reward Hacking in Long-Horizon Coding Agents, May 2026", url: "https://arxiv.org/html/2605.21384v1" },
-  { title: "Invariant Labs, GitHub MCP Exploited: Accessing private repositories via MCP, May 2025", url: "https://invariantlabs.ai/blog/mcp-github-vulnerability" },
-  { title: "OpenAI, The Hugging Face incident and the road ahead, August 2026", url: "https://openai.com/index/hugging-face-incident-and-the-road-ahead/" },
-  { title: "Can escalation channels redirect reward hacking toward defect disclosure?, August 2026", url: "https://arxiv.org/abs/2608.29460" },
-  { title: "Panickssery, Bowman and Feng, LLM Evaluators Recognize and Favor Their Own Generations, April 2024", url: "https://arxiv.org/abs/2404.13076" },
-  { title: "Zhong, Raghunathan and Carlini, ImpossibleBench: Measuring LLMs' Propensity of Exploiting Test Cases, October 2025", url: "https://arxiv.org/abs/2510.20270" },
-];
+import { sources } from "../data/sources";
 ---
 
-<section class="section wrap closing" aria-labelledby="closing-title">
-  <h2 class="closing-title" id="closing-title">
-    We don't need people to read more code. We need a system where nobody has to pretend they did.
-  </h2>
-
-  <div class="closing-grid">
-    <div class="prose">
-      <h3 class="subhead">Why “Onus”</h3>
-      <p>
-        From <i>onus probandi</i>, the burden of proof. Today it sits on a reviewer who has to find what's wrong
-        by reading lines. Onus moves it to the agent, which has to show its work. It shouldn't matter whose
-        agents do that work; what matters is what they can prove.
+<div class="band on-band ending">
+  <section class="section closing wrap" aria-labelledby="closing-title">
+    <h2 class="display-l" id="closing-title">
+      We don't need people to read more code. We need a system where nobody has to pretend they did.
+    </h2>
+    <div class="foot">
+      <p class="body-l muted">
+        Onus comes from <i>onus probandi</i>, the burden of proof. Today it sits on a reviewer reading lines.
+        Onus moves it to the agent, which has to show its work.
       </p>
-      <p class="muted">
-        Onus puts into practice the Agentic Coding Paradigm, set out by Mikias Abebe in the manifesto{" "}
-        <i>Code Is Not the Product</i> (September 2026).
-      </p>
+      <a class="o-button o-button--primary" href="https://github.com/onushq">Follow Onus on GitHub</a>
     </div>
-    <div class="cta">
-      <a class="button" href="https://github.com/onushq">Follow Onus on GitHub</a>
-    </div>
-  </div>
-</section>
+  </section>
 
-<footer class="site-footer wrap" aria-labelledby="sources-title">
-  <h2 class="subhead" id="sources-title">Sources</h2>
-  <ol class="sources">
-    {
-      sources.map((s, i) => (
-        <li id={`source-${i + 1}`}>
-          <a href={s.url}>{s.title}</a>
-        </li>
-      ))
-    }
-  </ol>
-  <p class="fine">© 2026 Onus</p>
-</footer>
+  <footer class="wrap site-footer" aria-labelledby="sources-title">
+    <div class="footer-grid">
+      <div>
+        <p class="wordmark">Onus</p>
+        <p class="caption muted credit">
+          Onus puts into practice the Agentic Coding Paradigm, set out by Mikias Abebe in the manifesto{" "}
+          <i>Code Is Not the Product</i> (September 2026).
+        </p>
+      </div>
+      <div>
+        <h2 class="label muted" id="sources-title">Sources</h2>
+        <ol class="sources">
+          {
+            sources.map((s, i) => (
+              <li id={`source-${i + 1}`}>
+                <a href={s.url}>{s.title}</a>
+              </li>
+            ))
+          }
+        </ol>
+      </div>
+    </div>
+    <p class="caption muted fine">© 2026 Onus</p>
+  </footer>
+</div>
 
 <style>
   .closing {
-    padding-bottom: var(--section-space);
+    padding-bottom: clamp(var(--space-9), 4rem + 5vw, var(--space-10));
   }
 
-  .closing-title {
-    font-size: clamp(2rem, 1rem + 4vw, 4.6rem);
-    font-stretch: 120%;
-    font-weight: 800;
-    line-height: 0.98;
-    letter-spacing: -0.03em;
-    max-width: 20ch;
+  .closing h2 {
+    max-width: 18ch;
   }
 
-  .closing-grid {
-    margin-top: clamp(2.5rem, 1.5rem + 3vw, 4rem);
-    display: grid;
-    gap: 2rem;
+  .foot {
+    margin-top: clamp(var(--space-7), 2rem + 3vw, var(--space-8));
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: var(--space-6);
   }
 
-  @media (min-width: 56rem) {
-    .closing-grid {
-      grid-template-columns: minmax(0, 1fr) auto;
-      align-items: end;
-      gap: 4rem;
-    }
-  }
-
-  .button {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.6rem;
-    background: var(--ink);
-    color: var(--paper);
-    text-decoration: none;
-    font-weight: 650;
-    padding: 0.9rem 1.4rem;
-    border-radius: 999px;
-  }
-
-  .button:hover {
-    background: color-mix(in srgb, var(--ink) 86%, var(--cobalt));
+  .foot .body-l {
+    max-width: 34rem;
   }
 
   .site-footer {
-    border-top: 1px solid var(--rule);
-    padding-block: 2.5rem 3rem;
+    padding-block: var(--space-7);
+    border-top: 1px solid color-mix(in srgb, var(--on-band) 14%, transparent);
+  }
+
+  .footer-grid {
+    display: grid;
+    gap: var(--space-6);
+  }
+
+  @media (min-width: 56rem) {
+    .footer-grid {
+      grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+      gap: var(--space-9);
+    }
+  }
+
+  .wordmark {
+    font-size: 1.5rem;
+    font-stretch: 125%;
+    font-weight: 750;
+    letter-spacing: -0.035em;
+  }
+
+  .credit {
+    margin-top: var(--space-3);
+    max-width: 30rem;
   }
 
   .sources {
-    margin: 1rem 0 0;
-    padding-left: 1.4rem;
+    margin-top: var(--space-3);
     display: grid;
-    gap: 0.4rem;
-    font-size: 0.9375rem;
+    gap: var(--space-2);
+    list-style: decimal;
+    padding-left: 1.25rem;
+    font-size: 0.875rem;
     line-height: 1.45;
-    max-width: 70ch;
-    color: var(--ink-2);
+    color: var(--on-band-muted);
   }
 
-  .sources li:target {
-    background: var(--buff);
-    border-radius: 3px;
+  .sources a {
+    color: var(--on-band);
+    text-decoration-color: color-mix(in srgb, var(--on-band) 35%, transparent);
+  }
+
+  .sources li:target a {
+    background: var(--signal);
+    color: var(--on-signal);
   }
 
   .fine {
-    margin-top: 2rem;
-    font-size: 0.875rem;
-    color: var(--ink-2);
+    margin-top: var(--space-7);
   }
 </style>
