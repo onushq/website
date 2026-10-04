@@ -1,0 +1,64 @@
+---
+const asks = [
+  { name: "Speak MCP or run a CLI", body: "Any agent that can run a shell command can use Onus." },
+  { name: "Work inside its token", body: "And ask for more through escalation, with evidence." },
+  { name: "Submit evidence with every change", body: "Intent, the semantic report, the tests behind it." },
+];
+---
+
+<section class="chapter" id="agents" data-phase="6" aria-labelledby="agents-title">
+  <div class="wrap">
+    <div class="chapter-copy wide">
+      <h2 class="display-l" id="agents-title">Any agent. Same rules.</h2>
+      <p class="body-l">
+        Onus isn't an agent and doesn't pick one for you. Codex, Claude Code or one you built yourself: each gets
+        the same scopes, lanes and review, and earns its own track record.
+      </p>
+      <ul class="asks">
+        {
+          asks.map((a) => (
+            <li>
+              <h3 class="title">{a.name}</h3>
+              <p class="muted">{a.body}</p>
+            </li>
+          ))
+        }
+      </ul>
+      <p class="display-s swap">Swap every agent overnight and nothing in Onus changes. Only the track records start fresh.</p>
+    </div>
+  </div>
+</section>
+
+<style>
+  .wide {
+    max-width: 52rem;
+  }
+
+  .wide .body-l {
+    max-width: 36rem;
+  }
+
+  .asks {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));
+    gap: var(--space-5);
+    margin-top: var(--space-4);
+  }
+
+  .asks li {
+    display: grid;
+    gap: var(--space-2);
+    align-content: start;
+    padding-top: var(--space-4);
+    border-top: 2px solid var(--ink);
+  }
+
+  .asks .title {
+    font-size: 1.1875rem;
+  }
+
+  .swap {
+    margin-top: var(--space-6);
+    max-width: 28ch;
+  }
+</style>

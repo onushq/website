@@ -16,7 +16,7 @@ const canonical = new URL(Astro.url.pathname, site).toString();
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="dark">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -24,8 +24,7 @@ const canonical = new URL(Astro.url.pathname, site).toString();
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="theme-color" content="#f4f6f7" media="(prefers-color-scheme: light)" />
-    <meta name="theme-color" content="#0b1620" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#0b1620" />
 
     <meta property="og:type" content="website" />
     <meta property="og:url" content={canonical} />

@@ -1,14 +1,14 @@
 // Sources cited on the page, in the order they are first cited.
 export const sources = [
   {
+    id: "smartbear",
+    title: "SmartBear, Best Practices for Code Review (the Cisco review-size study)",
+    url: "https://smartbear.com/learn/code-review/best-practices-for-peer-code-review/",
+  },
+  {
     id: "two-x",
     title: "He et al., AI Writes Faster Than Humans Can Review: A Longitudinal Study of an Enterprise “2×” Mandate, July 2026",
     url: "https://arxiv.org/abs/2607.01904",
-  },
-  {
-    id: "specbench",
-    title: "Zhao et al., SpecBench: Measuring Reward Hacking in Long-Horizon Coding Agents, May 2026",
-    url: "https://arxiv.org/html/2605.21384v1",
   },
   {
     id: "escalation",

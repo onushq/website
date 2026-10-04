@@ -233,3 +233,47 @@ code,
 .skip-link:focus {
   top: var(--space-3);
 }
+
+/* ---- Chapters: the story sections that sit over the 3D scene ---- */
+main {
+  position: relative;
+  z-index: 1;
+}
+
+.chapter {
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-height: 100vh;
+  min-height: 100svh;
+  padding-block: 16vh;
+}
+
+.chapter > .wrap {
+  width: min(100% - 2 * var(--space-4), 80rem);
+}
+
+@media (min-width: 48rem) {
+  .chapter > .wrap {
+    width: min(100% - 2 * var(--space-7), 80rem);
+  }
+}
+
+.chapter-copy {
+  max-width: 34rem;
+  display: grid;
+  gap: var(--space-5);
+}
+
+.chapter-copy .body-l {
+  color: var(--ink-muted);
+}
+
+/* Glass: panels that float over the scene without hiding it. */
+.glass {
+  background: color-mix(in srgb, var(--surface) 72%, transparent);
+  border: 1px solid color-mix(in srgb, var(--ink) 9%, transparent);
+  border-radius: var(--radius-m);
+  -webkit-backdrop-filter: blur(14px) saturate(1.2);
+  backdrop-filter: blur(14px) saturate(1.2);
+}

@@ -1,0 +1,46 @@
+---
+---
+
+<section class="chapter" id="map" data-phase="3" aria-labelledby="map-title">
+  <div class="wrap">
+    <div class="chapter-copy">
+      <h2 class="display-l" id="map-title">A live map, derived from code.</h2>
+      <p class="body-l">
+        Components, contracts, owners and risk labels, rebuilt on every change. Agents ask the map instead of
+        reading 50 files and guessing. This change adds one edge that matters: customer phone numbers now reach an
+        outside SMS provider.
+      </p>
+      <p class="query">
+        <span class="q">What depends on UserPreferences?</span>
+        <span class="a">notifications, billing</span>
+      </p>
+    </div>
+  </div>
+</section>
+
+<style>
+  .query {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    font-size: 0.9375rem;
+  }
+
+  .q,
+  .a {
+    padding: var(--space-2) var(--space-4);
+    border-radius: var(--radius-pill);
+  }
+
+  .q {
+    background: var(--ink);
+    color: var(--canvas);
+    font-weight: 600;
+  }
+
+  .a {
+    background: color-mix(in srgb, var(--surface) 72%, transparent);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+  }
+</style>

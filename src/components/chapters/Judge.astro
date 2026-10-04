@@ -1,0 +1,55 @@
+---
+import Cite from "../Cite.astro";
+
+const checks = [
+  { name: "Re-runs the evidence in a fresh environment", note: "The author's test results are never reused" },
+  { name: "Compares intent to effect", note: "Does the report match what the agent said it did?" },
+  { name: "Checks that no tests were weakened", note: "Deleted assertions, skips, special-cased inputs" },
+  { name: "Runs checks the author never saw", note: "Especially where features combine" },
+  { name: "Only then, judges taste", note: "Naming and structure count, but less", soft: true },
+];
+---
+
+<section class="chapter" id="judge" data-phase="4" aria-labelledby="judge-title">
+  <div class="wrap">
+    <div class="chapter-copy">
+      <h2 class="display-l" id="judge-title">Agents apply. A judge verifies.</h2>
+      <p class="body-l">
+        The judge re-derives the facts instead of giving an opinion. It never reads the author's reasoning, since
+        models favor work that looks like their own.<Cite id="self-preference" />
+      </p>
+      <ul class="glass checks">
+        {
+          checks.map((c) => (
+            <li class:list={["o-check", c.soft && "o-check--soft"]}>
+              <span class="o-check__mark" aria-hidden="true">
+                <svg viewBox="0 0 12 12" fill="none">
+                  <path d="M2.5 6.2 5 8.6l4.5-5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+              </span>
+              <span>
+                <span class="o-check__name">{c.name}</span>
+                <span class="o-check__note">{c.note}</span>
+              </span>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </div>
+</section>
+
+<style>
+  .checks {
+    padding: var(--space-2) var(--space-5);
+  }
+
+  .checks li:first-child {
+    border-top: 0;
+  }
+
+  .o-check__name,
+  .o-check__note {
+    display: block;
+  }
+</style>

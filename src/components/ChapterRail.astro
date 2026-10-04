@@ -1,0 +1,91 @@
+---
+const chapters = [
+  { id: "top", title: "Code is not the product" },
+  { id: "problem", title: "Output scales" },
+  { id: "meaning", title: "Signal from noise" },
+  { id: "map", title: "A live map" },
+  { id: "proof", title: "Proof, not argument" },
+  { id: "lanes", title: "Lanes" },
+  { id: "judge", title: "The judge" },
+  { id: "attention", title: "Human attention" },
+  { id: "agents", title: "Any agent" },
+  { id: "roadmap", title: "Roadmap" },
+  { id: "closing", title: "The point" },
+];
+---
+
+<nav class="rail" aria-label="Chapters" data-rail>
+  <ol>
+    {
+      chapters.map((c) => (
+        <li>
+          <a href={`#${c.id}`}>
+            <span class="rail-title">{c.title}</span>
+            <span class="rail-tick" aria-hidden="true" />
+          </a>
+        </li>
+      ))
+    }
+  </ol>
+</nav>
+
+<style>
+  .rail {
+    position: fixed;
+    right: clamp(var(--space-3), 2vw, var(--space-6));
+    top: 50%;
+    z-index: 15;
+    transform: translateY(-50%);
+  }
+
+  ol {
+    display: grid;
+    gap: 2px;
+  }
+
+  a {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: var(--space-3);
+    min-height: 22px;
+    text-decoration: none;
+    color: var(--ink);
+  }
+
+  .rail-title {
+    font-size: 0.8125rem;
+    font-stretch: 82%;
+    font-weight: 600;
+    opacity: 0;
+    transform: translateX(6px);
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    white-space: nowrap;
+  }
+
+  a:hover .rail-title,
+  a:focus-visible .rail-title {
+    opacity: 1;
+    transform: none;
+  }
+
+  .rail-tick {
+    width: 14px;
+    height: 2px;
+    border-radius: var(--radius-pill);
+    background: var(--ink-faint);
+    transition: width 0.25s ease, background-color 0.25s ease;
+  }
+
+  a:hover .rail-tick,
+  a[aria-current] .rail-tick {
+    width: 28px;
+    background: var(--ink);
+  }
+
+  @media (max-width: 60rem) {
+    .rail {
+      display: none;
+    }
+  }
+</style>

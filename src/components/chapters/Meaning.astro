@@ -1,0 +1,49 @@
+---
+import { changes } from "../../data/pr";
+---
+
+<section class="chapter" id="meaning" data-phase="2" aria-labelledby="meaning-title">
+  <div class="wrap">
+    <div class="chapter-copy">
+      <h2 class="display-l" id="meaning-title">Signal from noise.</h2>
+      <p class="body-l">
+        Onus reads a change the way a reviewer wishes they could: as a few shifts in meaning, most important first.
+        1,450 changed lines become four rows. One needs a person.
+      </p>
+      <ul class="rows">
+        {
+          changes.map((c) => (
+            <li
+              class:list={[
+                "o-row",
+                "glass-row",
+                c.person && "o-row--signal",
+                c.id === "contract" && "o-row--contract",
+                c.id === "event" && "o-row--edge",
+              ]}
+            >
+              <span class="o-row__change">{c.change}</span>
+              <span class="o-row__meta">
+                <span class="o-row__kind">{c.kind}</span>
+                <span>{c.why}</span>
+              </span>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </div>
+</section>
+
+<style>
+  .rows {
+    display: grid;
+    gap: var(--space-2);
+  }
+
+  .glass-row:not(.o-row--signal) {
+    background: color-mix(in srgb, var(--surface) 72%, transparent);
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+  }
+</style>

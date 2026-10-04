@@ -1,0 +1,52 @@
+---
+import Cite from "../Cite.astro";
+
+const scopes = [
+  { k: "Write", v: "notifications internals" },
+  { k: "Read", v: "OrderShipped, UserPreferences" },
+  { k: "Network", v: "SMS provider test endpoint" },
+  { k: "Expires", v: "When the task ends" },
+];
+---
+
+<section class="chapter" id="proof" data-phase="3" aria-labelledby="proof-title">
+  <div class="wrap">
+    <div class="chapter-copy">
+      <h2 class="display-l" id="proof-title">Access is earned with proof.</h2>
+      <p class="body-l">
+        Every task runs with a short-lived token that opens only the doors it needs. To get more, an agent attaches
+        evidence, not a persuasive paragraph. A structured way to escalate cut test-gaming from 23.6% to 5.3% across
+        eight frontier models.<Cite id="escalation" />
+      </p>
+      <div class="o-keycard card">
+        <div class="o-keycard__stripe"></div>
+        <div class="o-keycard__body">
+          <p class="o-keycard__task">Token for “Text customers when their order ships”</p>
+          <dl class="o-keycard__scopes">
+            {
+              scopes.map((s) => (
+                <div class="o-keycard__scope">
+                  <dt>{s.k}</dt>
+                  <dd>{s.v}</dd>
+                </div>
+              ))
+            }
+          </dl>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .card .o-keycard__stripe {
+    background: var(--band);
+  }
+
+  .card {
+    max-width: 26rem;
+    background: color-mix(in srgb, var(--surface) 78%, transparent);
+    -webkit-backdrop-filter: blur(14px);
+    backdrop-filter: blur(14px);
+  }
+</style>

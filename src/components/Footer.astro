@@ -1,0 +1,83 @@
+---
+import { sources } from "../data/sources";
+---
+
+<footer class="site-footer" aria-labelledby="sources-title">
+  <div class="wrap footer-grid">
+    <div>
+      <p class="wordmark">Onus</p>
+      <p class="caption muted credit">
+        Onus puts into practice the Agentic Coding Paradigm, set out by Mikias Abebe in the manifesto{" "}
+        <i>Code Is Not the Product</i> (September 2026).
+      </p>
+      <p class="caption muted">© 2026 Onus</p>
+    </div>
+    <div>
+      <h2 class="label muted" id="sources-title">Sources</h2>
+      <ol class="sources">
+        {
+          sources.map((s, i) => (
+            <li id={`source-${i + 1}`}>
+              <a href={s.url}>{s.title}</a>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    position: relative;
+    z-index: 1;
+    background: var(--band);
+    border-top: 1px solid var(--line);
+    padding-block: var(--space-8);
+  }
+
+  .footer-grid {
+    display: grid;
+    gap: var(--space-6);
+  }
+
+  @media (min-width: 56rem) {
+    .footer-grid {
+      grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+      gap: var(--space-9);
+    }
+  }
+
+  .wordmark {
+    font-size: 1.5rem;
+    font-stretch: 125%;
+    font-weight: 750;
+    letter-spacing: -0.035em;
+  }
+
+  .credit {
+    margin-block: var(--space-3);
+    max-width: 30rem;
+  }
+
+  .sources {
+    margin-top: var(--space-3);
+    display: grid;
+    gap: var(--space-2);
+    list-style: decimal;
+    padding-left: 1.25rem;
+    font-size: 0.875rem;
+    line-height: 1.45;
+    color: var(--ink-muted);
+  }
+
+  .sources a {
+    color: var(--ink);
+    text-decoration-color: color-mix(in srgb, var(--ink) 35%, transparent);
+  }
+
+  .sources li:target a {
+    background: var(--signal);
+    color: var(--on-signal);
+  }
+</style>

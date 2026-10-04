@@ -1,0 +1,63 @@
+---
+import Cite from "../Cite.astro";
+---
+
+<section class="chapter" id="problem" data-phase="1" aria-labelledby="problem-title">
+  <div class="wrap">
+    <div class="chapter-copy">
+      <h2 class="display-l" id="problem-title">Output scales. Attention doesn't.</h2>
+      <p class="body-l">
+        A careful reviewer covers about 400 lines in one sitting.<Cite id="smartbear" /> When one company pushed
+        to double merged pull requests, output did double, and review couldn't keep up. Human review fell from
+        89% to 68% of pull requests.<Cite id="two-x" />
+      </p>
+      <dl class="stats">
+        <div>
+          <dt class="label">More pull requests</dt>
+          <dd class="stat">3.1×</dd>
+        </div>
+        <div class="is-person">
+          <dt class="label">More reviewers</dt>
+          <dd class="stat">1.5×</dd>
+        </div>
+      </dl>
+      <p class="caption muted">Growth after the push to double output.<Cite id="two-x" /></p>
+    </div>
+  </div>
+</section>
+
+<style>
+  .stats {
+    display: flex;
+    gap: var(--space-8);
+    margin-top: var(--space-3);
+  }
+
+  .stats > div {
+    display: grid;
+    gap: var(--space-1);
+    padding-top: var(--space-3);
+    border-top: 2px solid var(--ink);
+    min-width: 8rem;
+  }
+
+  .stats > .is-person {
+    border-top-color: var(--signal);
+  }
+
+  dt {
+    color: var(--ink-muted);
+  }
+
+  .stat {
+    font-size: clamp(3rem, 2rem + 3vw, 4.5rem);
+    font-stretch: 112%;
+    font-weight: 600;
+    line-height: 1;
+    letter-spacing: -0.03em;
+  }
+
+  .is-person .stat {
+    color: var(--signal-ink);
+  }
+</style>

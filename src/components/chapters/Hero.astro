@@ -1,0 +1,108 @@
+---
+---
+
+<section class="chapter hero" id="top" data-phase="0" aria-labelledby="hero-title">
+  <div class="wrap">
+    <h1 class="display-xl" id="hero-title">
+      <span>Code is not</span>
+      <span>the product.</span>
+    </h1>
+    <div class="hero-foot">
+      <p class="body-l lede">
+        Agents now write code faster than anyone can read it. Onus is the layer every coding agent works
+        through. It reads each change for what it means, routes it by risk, and approves it on evidence.
+      </p>
+      <div class="ctas">
+        <a class="o-button o-button--primary" href="#meaning">See how it works</a>
+        <a class="o-button o-button--quiet" href="https://github.com/onushq">Follow on GitHub</a>
+      </div>
+    </div>
+  </div>
+  <p class="cue label" aria-hidden="true"><span class="cue-line"></span>Scroll</p>
+</section>
+
+<style>
+  .hero {
+    align-items: flex-end;
+    padding-bottom: 14vh;
+  }
+
+  h1 span {
+    display: block;
+  }
+
+  .hero-foot {
+    margin-top: clamp(var(--space-6), 1rem + 3vw, var(--space-8));
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: var(--space-6) var(--space-8);
+  }
+
+  .lede {
+    max-width: 34rem;
+    color: var(--ink-muted);
+  }
+
+  .ctas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+  }
+
+  .cue {
+    position: absolute;
+    left: 50%;
+    bottom: var(--space-5);
+    transform: translateX(-50%);
+    display: grid;
+    justify-items: center;
+    gap: var(--space-2);
+    color: var(--ink-muted);
+  }
+
+  .cue-line {
+    width: 1px;
+    height: 36px;
+    background: linear-gradient(var(--ink-muted), transparent);
+    transform-origin: top;
+  }
+
+  :global(html.motion) .cue-line {
+    animation: cue 2.2s ease-in-out infinite;
+  }
+
+  @keyframes cue {
+    0% {
+      transform: scaleY(0);
+    }
+    50% {
+      transform: scaleY(1);
+    }
+    100% {
+      transform: scaleY(1);
+      opacity: 0;
+    }
+  }
+
+  /* The headline arrives once, line by line. */
+  :global(html.motion) h1 span {
+    animation: rise 1.1s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  }
+
+  :global(html.motion) h1 span + span {
+    animation-delay: 0.12s;
+  }
+
+  :global(html.motion) .hero-foot {
+    animation: rise 1.1s cubic-bezier(0.2, 0.7, 0.2, 1) 0.3s both;
+  }
+
+  @keyframes rise {
+    from {
+      opacity: 0;
+      transform: translateY(28px);
+    }
+  }
+</style>
