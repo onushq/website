@@ -1,6 +1,6 @@
 # onushq.com
 
-The website for Onus, the software that puts the Agentic Coding Paradigm into practice. It's a single static page built with Astro and deployed on Vercel.
+The website for Onus. It's a single static page built with Astro and deployed on Vercel.
 
 ## Develop
 
