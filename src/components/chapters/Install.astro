@@ -1,0 +1,198 @@
+---
+import { downloads, installCommand, repo, tag } from "../../data/release";
+
+const action = [
+  "permissions:",
+  "  contents: read",
+  "  pull-requests: write   # for the comment",
+  "steps:",
+  "  - uses: actions/checkout@v5",
+  "    with:",
+  "      fetch-depth: 0",
+  `  - uses: onushq/onus/action@${tag}`,
+  "    with:",
+  "      fail-on: secrets",
+];
+---
+
+<section class="chapter install" id="install" data-phase="6" aria-labelledby="install-title">
+  <div class="wrap">
+    <div class="chapter-copy">
+      <h2 class="display-l" id="install-title">Try it on your next pull request.</h2>
+      <p class="body-l">
+        Phase 1 is out. One binary reads two commits and reports what changed in meaning. It only reads files: it
+        runs nothing from your repository and sends nothing anywhere.
+      </p>
+    </div>
+
+    <div class="panels">
+      <div class="stack">
+        <div class="panel glass">
+          <div class="panel-top">
+            <h3 class="title">In a terminal</h3>
+            <button class="o-button o-button--quiet copy" type="button" data-copy={installCommand}>Copy</button>
+          </div>
+          <pre class="o-code"><code><span class="o-code__line"><span class="prompt" aria-hidden="true">$ </span>{installCommand}</span><span class="o-code__line"><span class="prompt" aria-hidden="true">$ </span>onus report --base main --head HEAD</span></code></pre>
+          <p class="caption muted">
+            macOS and Linux. Installs to <code class="code">~/.local/bin</code> after checking the SHA-256. Run{" "}
+            <code class="code">onus help</code> for the guide.
+          </p>
+        </div>
+
+        <div class="panel glass">
+          <div class="panel-top">
+            <h3 class="title">On every pull request</h3>
+            <button class="o-button o-button--quiet copy" type="button" data-copy={action.join("\n")}>
+              Copy
+            </button>
+          </div>
+          <pre class="o-code"><code>{action.map((line) => <span class="o-code__line">{line}</span>)}</code></pre>
+          <p class="caption muted">
+            The GitHub Action posts the report as one comment, updated on each push, and fails the job only on what you
+            list in <code class="code">fail-on</code>.
+          </p>
+        </div>
+      </div>
+
+      <div class="panel glass downloads">
+        <h3 class="title">Download</h3>
+        <ul class="files">
+          {
+            downloads.map((d) => (
+              <li class="file">
+                <a class="file-link" href={d.url}>
+                  <span class="file-os">{d.os}</span>
+                  <span class="file-arch">{d.arch}</span>
+                </a>
+                <span class="file-name caption muted">
+                  {d.file} · <a href={d.checksum}>sha256</a>
+                </span>
+              </li>
+            ))
+          }
+        </ul>
+        <p class="caption muted">
+          Each archive holds <code class="code">onus</code> and the Svelte plugin, and carries a build attestation:{" "}
+          <code class="code">gh attestation verify &lt;archive&gt; --repo onushq/onus</code>.
+        </p>
+        <div class="links">
+          <a class="o-button o-button--primary" href={`${repo}/releases/latest`}>Release notes</a>
+          <a class="o-button o-button--quiet" href={repo}>Source on GitHub</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .install > .wrap {
+    display: grid;
+    gap: clamp(var(--space-7), 2rem + 3vw, var(--space-9));
+  }
+
+  .panels {
+    display: grid;
+    gap: var(--space-3);
+  }
+
+  @media (min-width: 64rem) {
+    .panels {
+      grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+      align-items: start;
+    }
+  }
+
+  .stack {
+    display: grid;
+    gap: var(--space-3);
+  }
+
+  .panel {
+    display: grid;
+    gap: var(--space-4);
+    padding: var(--space-5);
+    min-width: 0;
+  }
+
+  .panel-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+  }
+
+  .title {
+    font-size: 1.125rem;
+  }
+
+  .copy {
+    min-height: 32px;
+    padding: 0 var(--space-3);
+    font-size: 0.8125rem;
+  }
+
+  .prompt {
+    color: var(--ink-faint);
+    user-select: none;
+  }
+
+  .files {
+    display: grid;
+  }
+
+  .file {
+    display: grid;
+    gap: 2px;
+    padding: var(--space-3) 0;
+    border-top: 1px solid var(--line);
+  }
+
+  .file-link {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-2);
+    text-decoration: none;
+    color: var(--ink);
+  }
+
+  .file-link:hover .file-os {
+    text-decoration: underline;
+  }
+
+  .file-os {
+    font-weight: 620;
+  }
+
+  .file-arch {
+    color: var(--ink-muted);
+  }
+
+  .file-name {
+    font-family: var(--font-mono);
+    overflow-wrap: anywhere;
+  }
+
+  .file-name a {
+    color: inherit;
+  }
+
+  .links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+  }
+</style>
+
+<script>
+  for (const button of document.querySelectorAll<HTMLButtonElement>("[data-copy]")) {
+    button.addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText(button.dataset.copy ?? "");
+        button.textContent = "Copied";
+      } catch {
+        button.textContent = "Select and copy";
+      }
+      setTimeout(() => (button.textContent = "Copy"), 1600);
+    });
+  }
+</script>

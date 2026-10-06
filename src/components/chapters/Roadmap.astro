@@ -20,7 +20,7 @@ const phases = [
           <li class:list={["phase", "glass", p.now && "is-now"]}>
             <div class="phase-top">
               <p class="label">Phase {i + 1}</p>
-              {p.now && <span class="o-pill o-pill--outline now">Designing now</span>}
+              {p.now && <a class="o-pill o-pill--outline now" href="#install">Available now</a>}
             </div>
             <h3 class="title">{p.name}</h3>
             <p class="alone">{p.alone}</p>
@@ -90,6 +90,7 @@ const phases = [
   }
 
   .is-now .now {
+    text-decoration: none;
     color: var(--canvas);
     box-shadow: inset 0 0 0 1px var(--canvas);
   }

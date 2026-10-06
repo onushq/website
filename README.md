@@ -40,7 +40,7 @@ The page is one continuous three.js scene behind the text. About 14,000 bars (6,
 | A live map, Proof | the component graph; the new edge to the SMS provider is amber |
 | Lanes, The judge | four runways lined with lights; the human lane carries amber packets, the blocked lane hits a red barrier |
 | Human attention | the ten-step path with the two person steps in amber |
-| Any agent, Roadmap | a quiet field |
+| Any agent, Roadmap, Install | a quiet field |
 | The point | everything collapses into one orb with an amber core |
 
 How it fits together:
@@ -57,6 +57,8 @@ Fallbacks: without WebGL the canvas is hidden and the page reads as plain text o
 
 - `src/pages/index.astro` assembles the page: the scene layer, the header, the chapter rail, and the chapters in `src/components/chapters/`.
 - `src/data/pr.ts` holds the example pull request's four changes in meaning.
+- `src/data/release.ts` holds the release links of the Install chapter. Downloads point at `releases/latest/download/`, so only the Action example's `tag` needs updating when a version ships.
+- `vercel.json` redirects `/install.sh` to the installer attached to the latest GitHub release.
 - `public/og.png` is the social preview image, a frame of the hero (1200x630).
 
 ## Deploy
