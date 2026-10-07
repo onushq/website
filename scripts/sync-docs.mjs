@@ -125,13 +125,21 @@ topics.forEach((topic, index) => {
 const intro = `${frontmatter({
   order: 1,
   title: "Introduction",
-  description: "Onus turns a pull request into a short report of changes in meaning.",
+  description: "What Onus does, how to install it, and where to find each topic.",
   icon: "book",
 })}# Introduction
 
 Onus turns a pull request into a short report of changes in meaning: new external services, contract changes, new relationships between components, weakened tests, broken rules. Every row is computed from the code by deterministic analysis, never generated, and links to the files and lines behind it. Onus only reads files: it never installs or runs the code it analyzes.
 
 ## Install
+
+With Homebrew, on macOS or Linux:
+
+\`\`\`sh
+brew install onushq/tap/onus
+\`\`\`
+
+Or with the installer, which checks the download's SHA-256 and puts \`onus\` in \`~/.local/bin\`:
 
 \`\`\`sh
 curl -fsSL https://onushq.com/install.sh | sh

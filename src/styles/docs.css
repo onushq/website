@@ -107,3 +107,19 @@ body {
 #nd-docs-layout :not(pre) > code {
   margin-inline: 0;
 }
+
+/*
+  The theme puts a rule with 48px of space on each side between the page
+  description and the page actions. The actions sit right under the
+  description instead, with one rule below them.
+*/
+#nd-docs-layout .fd-page-actions-divider {
+  display: none;
+}
+
+#nd-docs-layout .fd-page-actions {
+  margin-top: 20px;
+  margin-bottom: 32px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--color-fd-border);
+}
