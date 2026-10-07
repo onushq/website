@@ -58,7 +58,24 @@ Fallbacks: without WebGL the canvas is hidden and the page reads as plain text o
 - `src/pages/index.astro` assembles the page: the scene layer, the header, the chapter rail, and the chapters in `src/components/chapters/`.
 - `src/data/pr.ts` holds the example pull request's four changes in meaning.
 - `src/data/release.ts` holds the release links of the Install chapter. Downloads point at `releases/latest/download/`, so only the Action example's `tag` needs updating when a version ships.
-- `vercel.json` redirects `/install.sh` to the installer attached to the latest GitHub release.
+- `astro.config.mjs` redirects `/install.sh` to the installer attached to the latest GitHub release.
+- The site builds with `output: "server"` and the Vercel adapter. The story page (`src/pages/index.astro`) is prerendered; `/docs`, its Markdown routes (`/docs/<page>.md`), `/llms.txt`, the sitemaps and the docs MCP endpoint render on demand.
+
+## Docs
+
+`/docs` is the Onus user guide, served with [Farming Labs Docs](https://docs.farming-labs.dev) (`@farming-labs/astro`, the shadcn preset of `@farming-labs/astro-theme`).
+
+- `docs/` holds the pages. They are generated from the guide that ships inside the `onus` binary (`crates/onus-cli/guide/*.md` in the onus repository), so edit the guide there and regenerate:
+
+  ```sh
+  npm run docs:sync                    # reads ../onus
+  npm run docs:sync -- path/to/onus    # or ONUS_REPO=path/to/onus
+  ```
+
+  `scripts/sync-docs.mjs` keeps the order of `onus help`, turns indented code into fenced blocks, and links `onus help <topic>` to the page. Its output is deterministic; commit what it writes.
+- `src/lib/docs.config.ts` configures the docs: search, page actions (copy as Markdown, open in Claude, ChatGPT or Cursor), `llms.txt` and the sitemap. Ask AI, feedback, analytics and Farming Labs telemetry are off.
+- `src/styles/docs.css` maps the preset's colors to the Onus tokens and keeps the sidebar a drawer on narrow screens; `src/components/DocsShell.astro` is the page shell.
+- `src/middleware.ts` routes the docs' machine-readable surfaces; `src/pages/docs/` renders the pages.
 - `public/og.png` is the social preview image, a frame of the hero (1200x630).
 
 ## Deploy

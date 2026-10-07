@@ -1,0 +1,43 @@
+---
+// The page shell of /docs: Farming Labs' layout with the Onus fonts and
+// colors (src/styles/docs.css) on top of the shadcn preset.
+import "@fontsource-variable/archivo/standard.css";
+import "@fontsource-variable/geist-mono/index.css";
+import "@farming-labs/astro-theme/shadcn/css";
+import "../styles/docs.css";
+import DocsLayout from "@farming-labs/astro-theme/src/components/DocsLayout.astro";
+import DocsContent from "@farming-labs/astro-theme/src/components/DocsContent.astro";
+import SearchDialog from "@farming-labs/astro-theme/src/components/SearchDialog.astro";
+import config from "../lib/docs.config";
+
+interface Props {
+  // What the docs server's load() returns for this page.
+  data: Awaited<ReturnType<typeof import("../lib/docs.server").load>>;
+}
+
+const { data } = Astro.props;
+const canonical = new URL(Astro.url.pathname, "https://onushq.com").toString();
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{data.title} · Onus docs</title>
+    {data.description && <meta name="description" content={data.description} />}
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:title" content={`${data.title} · Onus docs`} />
+    <meta property="og:image" content="https://onushq.com/og.png" />
+  </head>
+  <body>
+    <DocsLayout tree={data.tree} flatPages={data.flatPages} config={config}>
+      <a slot="sidebar-header" class="onus-home" href="/">← onushq.com</a>
+      <DocsContent data={data} config={config} />
+    </DocsLayout>
+    <SearchDialog config={config} />
+  </body>
+</html>

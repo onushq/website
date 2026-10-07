@@ -1,0 +1,109 @@
+/*
+  Onus colors for /docs, on top of Farming Labs' shadcn preset (the fonts
+  are set in src/lib/docs.config.ts).
+  The values mirror src/styles/tokens.css: ink and cool grey everywhere,
+  amber (signal) only for focus, the one place it asks a person to look.
+*/
+:root {
+  --color-fd-background: #f4f6f7;
+  --color-fd-foreground: #0b1a24;
+  --color-fd-card: #ffffff;
+  --color-fd-card-foreground: #0b1a24;
+  --color-fd-popover: #ffffff;
+  --color-fd-popover-foreground: #0b1a24;
+  --color-fd-primary: #0b1a24;
+  --color-fd-primary-foreground: #f4f6f7;
+  --color-fd-secondary: #eaeef1;
+  --color-fd-secondary-foreground: #0b1a24;
+  --color-fd-muted: #eaeef1;
+  --color-fd-muted-foreground: #4f5e69;
+  --color-fd-accent: #eaeef1;
+  --color-fd-accent-foreground: #0b1a24;
+  --color-fd-border: #dde3e7;
+  --color-fd-ring: #0b1a24;
+  --fd-shadcn-control: #eaeef1;
+  --fd-shadcn-control-hover: #dde3e7;
+  --fd-shadcn-nav-active: #eaeef1;
+  --fd-shadcn-code: #eaeef1;
+  --fd-shadcn-code-highlight: #dde3e7;
+  --radius: 8px;
+  --onus-signal: #ffb224;
+}
+
+:is(html.dark, body.dark, .dark) {
+  --color-fd-background: #0b1620;
+  --color-fd-foreground: #eef2f4;
+  --color-fd-card: #111f2a;
+  --color-fd-card-foreground: #eef2f4;
+  --color-fd-popover: #111f2a;
+  --color-fd-popover-foreground: #eef2f4;
+  --color-fd-primary: #eef2f4;
+  --color-fd-primary-foreground: #0b1620;
+  --color-fd-secondary: #111f2a;
+  --color-fd-secondary-foreground: #eef2f4;
+  --color-fd-muted: #111f2a;
+  --color-fd-muted-foreground: #96a6b1;
+  --color-fd-accent: #1e2e3a;
+  --color-fd-accent-foreground: #eef2f4;
+  --color-fd-border: #1e2e3a;
+  --color-fd-ring: #96a6b1;
+  --fd-shadcn-control: #111f2a;
+  --fd-shadcn-control-hover: #1e2e3a;
+  --fd-shadcn-nav-active: #111f2a;
+  --fd-shadcn-code: #08121a;
+  --fd-shadcn-code-highlight: #111f2a;
+}
+
+body {
+  background: var(--color-fd-background);
+  color: var(--color-fd-foreground);
+  font-family: var(--fd-font-sans);
+}
+
+#nd-docs-layout :is(code, kbd, pre) {
+  font-family: var(--fd-font-mono);
+  font-variant-ligatures: none;
+}
+
+#nd-docs-layout :focus-visible {
+  outline: 2px solid var(--onus-signal);
+  outline-offset: 2px;
+}
+
+/* The wordmark, as on the story page. */
+#nd-docs-layout :is(.fd-header-title, .fd-sidebar-title) {
+  font-stretch: 125%;
+  font-weight: 750;
+  letter-spacing: -0.03em;
+}
+
+.onus-home {
+  display: inline-block;
+  margin: 0 0 4px;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--color-fd-muted-foreground);
+  text-decoration: none;
+}
+
+.onus-home:hover {
+  color: var(--color-fd-foreground);
+}
+
+/*
+  The shadcn preset was written for the Next.js layout and pins the sidebar
+  in place with a transparent background, which breaks the Astro layout on
+  narrow screens. Below the desktop breakpoint the sidebar is a drawer again.
+*/
+@media (max-width: 1023px) {
+  #nd-docs-layout .fd-sidebar {
+    position: fixed;
+    background: var(--color-fd-background) !important;
+    border-right: 1px solid var(--color-fd-border) !important;
+  }
+}
+
+/* Inline code sits in the sentence, without extra space around it. */
+#nd-docs-layout :not(pre) > code {
+  margin-inline: 0;
+}

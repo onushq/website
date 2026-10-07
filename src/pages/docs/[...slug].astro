@@ -1,0 +1,16 @@
+---
+import DocsShell from "../../components/DocsShell.astro";
+import { load } from "../../lib/docs.server";
+
+let data;
+try {
+  data = await load(`${Astro.url.pathname}${Astro.url.search}`);
+} catch (error) {
+  if ((error as { status?: number }).status === 404) {
+    return new Response("Not found", { status: 404, headers: { "Content-Type": "text/plain" } });
+  }
+  throw error;
+}
+---
+
+<DocsShell data={data} />

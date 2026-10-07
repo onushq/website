@@ -1,4 +1,7 @@
 ---
+// The story page is static; only /docs renders on demand.
+export const prerender = true;
+
 import Base from "../layouts/Base.astro";
 import SceneLayer from "../components/SceneLayer.astro";
 import Header from "../components/Header.astro";
