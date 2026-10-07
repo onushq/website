@@ -15,7 +15,13 @@ Onus only reads files. It never installs dependencies or runs the code it analyz
 
 ## Install
 
-On macOS and Linux, the installer downloads the binary for your system from the latest GitHub release, checks its SHA-256 and puts it in ~/.local/bin:
+With Homebrew, on macOS or Linux:
+
+```sh
+brew install onushq/tap/onus
+```
+
+Or, without Homebrew, the installer downloads the binary for your system from the latest GitHub release, checks its SHA-256 and puts it in ~/.local/bin:
 
 ```sh
 curl -fsSL https://onushq.com/install.sh | sh

@@ -54,6 +54,7 @@ onus report --repo ../shop --base origin/main --head feature/sms --format json
 
 - `--repo <dir>`: the repository (default: the current directory).
 - `--format`, `--intent`, `--config`, `--fail-on`, `--plugins`, `--trusted`, `--allow-unsandboxed`: as for `onus diff`. SCIP indexes for `report` come from `scip` plugins, which index each ref in trusted mode.
+- `--cache-dir <dir>`: keep the base ref's map in this folder and reuse it on the next report against the same base commit. The report is the same either way; see [`onus help ci`](/docs/ci).
 
 Any ref git understands works: branches, tags, `HEAD~3`, commit hashes. In JSON, `base` and `head` read like `main (abc1234)`.
 

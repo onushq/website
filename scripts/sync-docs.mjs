@@ -48,11 +48,14 @@ function language(lines) {
   const first = lines.find((l) => l.trim() !== "")?.trim() ?? "";
   if (/^[{[]/.test(first)) return "json";
   if (/^(```|#{2,} |\*\*[A-Za-z]|\||<!--)/.test(first)) return "md";
-  if (/^(\$ |onus |curl |cargo |git |cd |npm |pnpm |npx |jq |cp |docker |brew |export |echo |# )/.test(first)) return "sh";
+  if (/^(\$ |onus |curl |cargo |git |cd |npm |pnpm |npx |jq |cp |docker |brew |export |echo |# |scripts\/|\.\/)/.test(first)) return "sh";
   if (/^(- )?["']?[\w.@/-]+["']?:(\s|$)/.test(first)) {
     // Listings such as `publish: bus.publish($EVENT, ...)` look like YAML
     // but are not; real YAML here quotes its patterns.
-    const unquoted = lines.map((l) => l.replace(/"[^"]*"|'[^']*'/g, '""'));
+    // GitHub Actions conditions (`if: startsWith(...)`) are YAML values.
+    const unquoted = lines
+      .filter((l) => !/^\s*(- )?if:/.test(l))
+      .map((l) => l.replace(/"[^"]*"|'[^']*'/g, '""'));
     return unquoted.some((l) => /\w\(/.test(l)) ? "text" : "yaml";
   }
   return "text";
