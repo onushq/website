@@ -1,5 +1,5 @@
 ---
-import { downloads, installCommand, repo, tag } from "../../data/release";
+import { brewCommand, downloads, installCommand, repo, tag } from "../../data/release";
 
 const action = [
   "permissions:",
@@ -34,7 +34,8 @@ const action = [
           </div>
           <pre class="o-code"><code><span class="o-code__line"><span class="prompt" aria-hidden="true">$ </span>{installCommand}</span><span class="o-code__line"><span class="prompt" aria-hidden="true">$ </span>onus report --base main --head HEAD</span></code></pre>
           <p class="caption muted">
-            macOS and Linux. Installs to <code class="code">~/.local/bin</code> after checking the SHA-256. The{" "}
+            macOS and Linux. Installs to <code class="code">~/.local/bin</code> after checking the SHA-256, or use
+            Homebrew: <code class="code">{brewCommand}</code>. The{" "}
             <a href="/docs/getting-started">guide</a> is also built in: <code class="code">onus help</code>.
           </p>
         </div>

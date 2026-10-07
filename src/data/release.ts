@@ -2,7 +2,7 @@
 // release on GitHub; the tag is shown in the GitHub Action example, so update
 // it when a new version ships.
 export const repo = "https://github.com/onushq/onus";
-export const tag = "v0.1.0";
+export const tag = "v0.2.0";
 
 const latest = `${repo}/releases/latest/download`;
 
@@ -18,4 +18,5 @@ export const downloads = [
 });
 
 export const installCommand = "curl -fsSL https://onushq.com/install.sh | sh";
+export const brewCommand = "brew install onushq/tap/onus";
 export const installScript = `${latest}/install.sh`;
