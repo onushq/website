@@ -1,5 +1,5 @@
 ---
-order: 9
+order: 10
 title: "Plugins"
 description: "New languages and frameworks, SCIP indexes, language servers, trusted mode"
 icon: "code"

@@ -2,7 +2,7 @@
 // release on GitHub; the tag is shown in the GitHub Action example, so update
 // it when a new version ships.
 export const repo = "https://github.com/onushq/onus";
-export const tag = "v0.2.0";
+export const tag = "v0.3.0";
 
 const latest = `${repo}/releases/latest/download`;
 
