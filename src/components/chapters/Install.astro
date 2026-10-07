@@ -34,8 +34,8 @@ const action = [
           </div>
           <pre class="o-code"><code><span class="o-code__line"><span class="prompt" aria-hidden="true">$ </span>{installCommand}</span><span class="o-code__line"><span class="prompt" aria-hidden="true">$ </span>onus report --base main --head HEAD</span></code></pre>
           <p class="caption muted">
-            macOS and Linux. Installs to <code class="code">~/.local/bin</code> after checking the SHA-256. Run{" "}
-            <code class="code">onus help</code> for the guide.
+            macOS and Linux. Installs to <code class="code">~/.local/bin</code> after checking the SHA-256. The{" "}
+            <a href="/docs/getting-started">guide</a> is also built in: <code class="code">onus help</code>.
           </p>
         </div>
 
@@ -76,8 +76,9 @@ const action = [
           <code class="code">gh attestation verify &lt;archive&gt; --repo onushq/onus</code>.
         </p>
         <div class="links">
-          <a class="o-button o-button--primary" href={`${repo}/releases/latest`}>Release notes</a>
-          <a class="o-button o-button--quiet" href={repo}>Source on GitHub</a>
+          <a class="o-button o-button--primary" href="/docs/getting-started">Read the docs</a>
+          <a class="o-button o-button--quiet" href={`${repo}/releases/latest`}>Release notes</a>
+          <a class="o-button o-button--quiet" href={repo}>Source</a>
         </div>
       </div>
     </div>
