@@ -1,5 +1,5 @@
 ---
-order: 13
+order: 14
 title: "Troubleshooting"
 description: "Map confidence notes, common questions and current limits"
 ---
