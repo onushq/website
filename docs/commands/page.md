@@ -45,7 +45,7 @@ onus diff old new --intent pr-body.md --fail-on rule-violation,secrets
 
 ## onus report --base <ref> --head <ref>
 
-The same report for two git refs. Each ref is extracted with `git archive` into a temporary directory that is removed afterwards; the repository itself is never modified.
+The same report for two git refs. Each ref is extracted with `git archive` into a temporary directory that is removed afterwards; the repository itself is never modified. Only the paths git reports as different are compared line by line, and the base tree takes the head's copy of every other file.
 
 ```sh
 onus report --base main --head HEAD
