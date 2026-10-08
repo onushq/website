@@ -24,6 +24,7 @@ onus map . --config other/onus.yaml
 - `--json`: print the whole map (format: [schemas/codebase-map.schema.json](https://github.com/onushq/onus/blob/main/schemas/codebase-map.schema.json)).
 - `--config <file>`: use this onus.yaml instead of `<dir>/onus.yaml`.
 - `--scip <file>`: import a SCIP index of the directory (repeatable). Runs nothing.
+- `--traces <file>`: add the calls in OpenTelemetry traces (OTLP JSON) as `traced` edges (repeatable). See [`onus help environments`](/docs/environments).
 - `--plugins <file>`, `--trusted`, `--allow-unsandboxed`: see "Plugins" below.
 
 ## onus diff <base> <head>
@@ -42,6 +43,7 @@ onus diff old new --intent pr-body.md --fail-on rule-violation,secrets
 - `--config <file>`: the onus.yaml used for both trees. By default Onus uses the base tree's onus.yaml for both, so a change cannot relax the rules it is checked against.
 - `--fail-on <what>`: exit with code 2 when `rule-violation` (a new boundary-rule violation) or `secrets` (a committed secret) is found. Repeat the flag or separate values with commas. `none` never fails.
 - `--base-scip <file>`, `--head-scip <file>`: import SCIP indexes of each tree (repeatable).
+- `--traces <file>`: add the calls in OpenTelemetry traces to both trees (repeatable), so they are facts of both and never changes.
 - `--plugins <file>`, `--trusted`, `--allow-unsandboxed`: see "Plugins" below.
 
 ## onus report --base <ref> --head <ref>
@@ -54,7 +56,7 @@ onus report --repo ../shop --base origin/main --head feature/sms --format json
 ```
 
 - `--repo <dir>`: the repository (default: the current directory).
-- `--format`, `--markdown-out`, `--intent`, `--config`, `--fail-on`, `--plugins`, `--trusted`, `--allow-unsandboxed`: as for `onus diff`. SCIP indexes for `report` come from `scip` plugins, which index each ref in trusted mode.
+- `--format`, `--markdown-out`, `--intent`, `--config`, `--fail-on`, `--traces`, `--plugins`, `--trusted`, `--allow-unsandboxed`: as for `onus diff`. SCIP indexes for `report` come from `scip` plugins, which index each ref in trusted mode.
 - `--cache-dir <dir>`: keep the base ref's map in this folder and reuse it on the next report against the same base commit. The report is the same either way; see [`onus help ci`](/docs/ci).
 
 Any ref git understands works: branches, tags, `HEAD~3`, commit hashes. In JSON, `base` and `head` read like `main (abc1234)`.
@@ -99,7 +101,7 @@ claude mcp add onus -- onus mcp
 
 ## onus query <question>
 
-The same questions as the MCP tools, from a shell, printed as JSON: `status`, `find <words>`, `symbol <id>`, `dependents <target>`, `dependencies <target>`, `tests-for <target>`, `owners <target>`, `component <id>`, `file <path>`, `check [--base <ref>]` and `stats`.
+The same questions as the MCP tools, from a shell, printed as JSON: `status`, `find <words>`, `symbol <id>`, `dependents <target>`, `dependencies <target>`, `tests-for <target>`, `impact <target> [--change <kind>]`, `invariants [target]`, `owners <target>`, `component <id>`, `file <path>`, `check [--base <ref>]` and `stats`.
 
 ```sh
 onus query find format phone
@@ -108,6 +110,12 @@ onus query dependents UserPreferences --depth 2 --limit 20
 
 - `--repo <dir>` and `--no-server`: as for `onus mcp`.
 - `--depth <n>` (1 to 8) and `--limit <n>` (default 50, at most 500) where they apply.
+
+## Scopes, lanes and environments
+
+- `onus token`, `onus scope`, `onus gateway`, `onus escalate`, `onus escalation`, `onus audit`, `onus run-test`: task tokens, the git gateway, escalation and the audit log. See [`onus help scopes`](/docs/scopes).
+- `onus submit`, `onus classify`, `onus judge`, `onus outcomes`: risk lanes, the judge and outcome records. See [`onus help lanes`](/docs/lanes).
+- `onus env`, `onus evidence`: environments and the evidence store. See [`onus help environments`](/docs/environments).
 
 ## onus help [command | topic]
 

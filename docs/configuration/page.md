@@ -205,3 +205,18 @@ lanes:
     - { lane: human, subkinds: [migration-changed] }
   heldOut: { command: "npm run test:held-out", image: "node:22", setup: "npm ci" }
 ```
+
+## environment
+
+The container `onus env create` builds from a commit: its image (default: the devcontainer's), a setup command run once per lockfile and kept as a warm image, a seed command, and the files a run writes that are kept as evidence. See [`onus help environments`](/docs/environments).
+
+```yaml
+environment:
+  image: node:22-alpine
+  setup: npm ci
+  seed: node scripts/seed-test-data.mjs
+  evidence: ["reports/**/*.xml"]     # JUnit XML
+  traces: ["otel/*.json"]            # OTLP JSON
+  lockfiles: [package-lock.json]     # default: the usual lockfiles
+  egressImage: ubuntu/squid          # the proxy for hosts a token names
+```

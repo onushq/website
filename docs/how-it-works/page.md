@@ -1,5 +1,5 @@
 ---
-order: 13
+order: 14
 title: "How Onus works"
 description: "How maps are built and compared"
 ---
