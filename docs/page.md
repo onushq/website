@@ -45,6 +45,7 @@ These pages are the guide that ships inside the `onus` binary: `onus help <topic
 | [intent](/docs/intent) | Checking a change against its stated intent |
 | [ci](/docs/ci) | Running Onus on every pull request |
 | [agents](/docs/agents) | The map for coding agents: onus mcp, its tools, many agents and worktrees |
+| [scopes](/docs/scopes) | Task tokens, the git gateway, escalation with evidence and the audit log |
 | [plugins](/docs/plugins) | New languages and frameworks, SCIP indexes, language servers, trusted mode |
 | [how-it-works](/docs/how-it-works) | How maps are built and compared |
 | [troubleshooting](/docs/troubleshooting) | Map confidence notes, common questions and current limits |
