@@ -129,6 +129,25 @@ onus ui --repo ../shop --port 0 --no-open
 - `onus submit`, `onus classify`, `onus judge`, `onus outcomes`: risk lanes, the judge and outcome records. See [`onus help lanes`](/docs/lanes).
 - `onus env`, `onus evidence`: environments and the evidence store. See [`onus help environments`](/docs/environments).
 
+## onus ci
+
+What the GitHub Action runs to keep outcome records on a branch ([`onus help ci`](/docs/ci)); usable from any CI system.
+
+```sh
+onus ci records pull --dir records                       # the onus/records branch into a folder
+onus ci pr --base "$BASE" --head "$HEAD" --change acme/shop#7 --branch codex/sms --author mike \
+  --body-file body.md --report report.json --records records --out out
+onus ci comment --change acme/shop#7 --body-file comment.md --author lead --association MEMBER --records records
+onus ci closed --change acme/shop#7 --merged --commit "$SHA" --records records
+onus ci push --records records --since "$BEFORE"
+onus ci records push --dir records --message "acme/shop#7 closed"
+```
+
+- `ci pr` submits, classifies and (with `--judge`) judges the change, appends to `pulls.jsonl`, writes `submission.json`, `classification.json`, `judgment.json` and the comment section `lane.md` to `--out`, and prints `{lane, verdict, agent, record}`. `--evidence <file>` adds test runs.
+- `ci comment` acts on `/onus approve <row>`, `/onus audit ok|miss [note]` and `/onus incident <note> [involved: a, b]` from OWNER, MEMBER or COLLABORATOR, and prints `{command, ok, reply, rerun}`.
+- `ci closed` turns the pull request's latest record into an outcome; `ci push` records reverts.
+- `ci records` takes `--remote` (default `origin`) and `--branch` (default `onus/records`).
+
 ## onus help [command | topic]
 
 ```sh
