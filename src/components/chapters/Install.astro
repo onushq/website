@@ -20,8 +20,8 @@ const action = [
     <div class="chapter-copy">
       <h2 class="display-l" id="install-title">Try it on your next pull request.</h2>
       <p class="body-l">
-        Phase 1 is out. One binary reads two commits and reports what changed in meaning. It only reads files: it
-        runs nothing from your repository and sends nothing anywhere.
+        All five phases are out, in one binary. Reports only read files and send nothing anywhere; Onus runs your
+        code only when you ask it to, in a container.
       </p>
     </div>
 
@@ -32,10 +32,10 @@ const action = [
             <h3 class="title">In a terminal</h3>
             <button class="o-button o-button--quiet copy" type="button" data-copy={installCommand}>Copy</button>
           </div>
-          <pre class="o-code"><code><span class="o-code__line"><span class="prompt" aria-hidden="true">$ </span>{installCommand}</span><span class="o-code__line"><span class="prompt" aria-hidden="true">$ </span>onus report --base main --head HEAD</span></code></pre>
+          <pre class="o-code"><code><span class="o-code__line"><span class="prompt" aria-hidden="true">$ </span>{installCommand}</span><span class="o-code__line"><span class="prompt" aria-hidden="true">$ </span>onus report --base main --head HEAD</span><span class="o-code__line"><span class="prompt" aria-hidden="true">$ </span>onus ui</span></code></pre>
           <p class="caption muted">
             macOS and Linux. Installs to <code class="code">~/.local/bin</code> after checking the SHA-256, or use
-            Homebrew: <code class="code">{brewCommand}</code>. The{" "}
+            Homebrew: <code class="code">{brewCommand}</code>. <code class="code">onus ui</code> opens all of it in your browser. The{" "}
             <a href="/docs/getting-started">guide</a> is also built in: <code class="code">onus help</code>.
           </p>
         </div>

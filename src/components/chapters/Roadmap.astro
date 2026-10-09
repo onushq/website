@@ -1,18 +1,18 @@
 ---
 const phases = [
-  { name: "Semantic change reports", alone: "A meaning-level summary on every pull request. Big agent PRs become reviewable.", gate: "Reviewers prefer the report to the raw diff.", now: true },
+  { name: "Semantic change reports", alone: "A meaning-level summary on every pull request. Big agent PRs become reviewable.", gate: "Reviewers prefer the report to the raw diff." },
   { name: "The map as a service", alone: "Agents and people query the map through MCP and a CLI.", gate: "Map answers match reality on sampled questions." },
   { name: "Scoped tokens and escalation", alone: "A hijacked agent reaches only what its task needed.", gate: "No writes land out of scope." },
   { name: "Risk lanes and the judge", alone: "Human attention concentrates on the risky slice.", gate: "Audits find a low miss rate." },
-  { name: "Evidence factory and production loop", alone: "Outcomes retrain the classifier. It improves with use." },
+  { name: "Evidence factory and production loop", alone: "Environments record evidence; outcomes feed back into the lanes. It improves with use." },
 ];
 ---
 
 <section class="chapter roadmap" id="roadmap" data-phase="6" aria-labelledby="roadmap-title">
   <div class="wrap">
     <div class="chapter-copy">
-      <h2 class="display-l" id="roadmap-title">Where we're starting.</h2>
-      <p class="body-l">Five phases. Each is useful on its own and moves on only when a measurable gate is passed.</p>
+      <h2 class="display-l" id="roadmap-title">Where we are.</h2>
+      <p class="body-l">Five phases, all built. Each is useful on its own; the gates are now measured in the field, on real pull requests.</p>
     </div>
     <ol class="phases">
       {
@@ -20,7 +20,7 @@ const phases = [
           <li class:list={["phase", "glass", p.now && "is-now"]}>
             <div class="phase-top">
               <p class="label">Phase {i + 1}</p>
-              {p.now && <a class="o-pill o-pill--outline now" href="#install">Available now</a>}
+              <a class="o-pill o-pill--outline now" href="#install">Available</a>
             </div>
             <h3 class="title">{p.name}</h3>
             <p class="alone">{p.alone}</p>
