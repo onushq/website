@@ -1,4 +1,10 @@
 ---
+const lanes = [
+  { name: "Auto-merge", who: "What your rules allow, from an agent with 10 merged changes and no recent incident", chips: ["Docs, by your rule", "Internal changes your policy lists"] },
+  { name: "Judge", who: "The default: verified on evidence before it merges", chips: ["Everything no rule or floor moves"] },
+  { name: "A person", who: "Sensitive code, security and the rules of the game", chips: ["Auth, payments, personal data", "Tests, CI and policy", "Anything outside the stated intent"], signal: true },
+  { name: "Blocked", who: "Until someone fixes it or approves it", chips: ["A committed secret", "Writes outside the task's scope", "Weakened tests, unapproved"], blocked: true },
+];
 ---
 
 <section class="chapter" id="lanes" data-phase="4" aria-labelledby="lanes-title">
@@ -6,12 +12,44 @@
     <div class="chapter-copy">
       <h2 class="display-l" id="lanes-title">Every change gets a lane.</h2>
       <p class="body-l">
-        Routine work merges on evidence alone. The judge takes the middle. Auth, payments, personal data and any
-        change to tests, CI or policy go to a person. Writes outside scope stop at the barrier.
+        Each change is routed by the rows of its report. Routine work merges on evidence alone, the judge takes the
+        middle, risky changes go to a person, and some never merge as they are.
       </p>
+      <ul class="lanes">
+        {
+          lanes.map((l) => (
+            <li class="o-lane glass">
+              <span class="o-lane__name">{l.name}</span>
+              <span class="o-lane__who">{l.who}</span>
+              {l.chips.map((c) => (
+                <span class:list={["o-chip", l.signal && "o-chip--signal", l.blocked && "o-chip--blocked"]}>{c}</span>
+              ))}
+            </li>
+          ))
+        }
+      </ul>
       <p class="body muted">
-        Rules set the floor, and a learned model can only move a change up a lane, never down.
+        You write the rules in <code class="code">onus.yaml</code>. Floors no rule can lower keep risky changes with
+        people, and a learned model can only move a change up a lane, never down.
       </p>
     </div>
   </div>
 </section>
+
+<style>
+  .lanes {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-3);
+  }
+
+  .lanes .o-lane {
+    gap: var(--space-2);
+  }
+
+  @media (max-width: 30rem) {
+    .lanes {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

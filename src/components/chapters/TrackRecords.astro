@@ -1,0 +1,148 @@
+---
+// An illustration of the Outcomes page in onus ui: the shape of a real record, invented numbers.
+const setups = [
+  { agent: "codex", merged: 12, state: "eligible" },
+  { agent: "claude-code/opus", merged: 9, state: "incident" },
+  { agent: "devin", merged: 4, state: "needs 6 more" },
+  { agent: "person/maria", merged: 31, state: "eligible" },
+];
+const commands = [
+  ["/onus approve new-external-service:external:acme-sms@notifications", "a person approves one row; the lane updates"],
+  ["/onus audit miss the opt-out was ignored", "a human audit of something that merged on its own"],
+  ["/onus incident SMS sent twice involved: notifications", "what broke, and where the next tests should go"],
+];
+---
+
+<section class="chapter" id="records" data-phase="5" aria-labelledby="records-title">
+  <div class="wrap">
+    <div class="chapter-copy">
+      <h2 class="display-l" id="records-title">Trust is earned, per agent.</h2>
+      <p class="body-l">
+        Every pull request leaves a record: which agent made it, the lane it took, whether it merged, and whether it
+        was later reverted or caused an incident. CI keeps it on a branch of your repository. An agent setup may
+        auto-merge only after 10 merged changes, and an incident among its last 20 takes that away until its record is clean again.
+      </p>
+
+      <div class="card glass">
+        <p class="label muted">Agent setups</p>
+        <table>
+          <thead>
+            <tr><th scope="col">Setup</th><th scope="col" class="num">Merged</th><th scope="col">Auto-merge</th></tr>
+          </thead>
+          <tbody>
+            {
+              setups.map((s) => (
+                <tr>
+                  <td><code class="code">{s.agent}</code></td>
+                  <td class="num">{s.merged}</td>
+                  <td>
+                    <span
+                      class:list={[
+                        "state",
+                        s.state === "eligible" && "is-ok",
+                        s.state === "incident" && "is-bad",
+                      ]}
+                    >
+                      {s.state === "incident" ? "recent incident" : s.state}
+                    </span>
+                  </td>
+                </tr>
+              ))
+            }
+          </tbody>
+        </table>
+      </div>
+
+      <ul class="commands">
+        {
+          commands.map(([c, what]) => (
+            <li>
+              <code class="cmd">{c}</code>
+              <span class="caption muted">{what}</span>
+            </li>
+          ))
+        }
+      </ul>
+      <p class="body muted">
+        People add what CI cannot see with a comment on the pull request; only people with write access are recorded.
+        The agent is read from the branch name, the bot that opened it, or an <code class="code">Onus-Agent:</code>
+        trailer. Agents can never write their own record.
+      </p>
+    </div>
+  </div>
+</section>
+
+<style>
+  .card {
+    padding: var(--space-4) var(--space-5);
+    display: grid;
+    gap: var(--space-2);
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9375rem;
+  }
+
+  th {
+    text-align: left;
+    font-weight: 600;
+    font-size: 0.8125rem;
+    color: var(--ink-muted);
+    padding: var(--space-2) 0;
+  }
+
+  td {
+    padding: var(--space-2) 0;
+    border-top: 1px solid color-mix(in srgb, var(--ink) 10%, transparent);
+  }
+
+  td .code {
+    overflow-wrap: anywhere;
+  }
+
+  .num {
+    text-align: right;
+    padding-right: var(--space-4);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .state {
+    display: inline-block;
+    padding: 1px var(--space-2);
+    border-radius: var(--radius-pill);
+    font-size: 0.8125rem;
+    box-shadow: inset 0 0 0 1px var(--line);
+    color: var(--ink-muted);
+    white-space: nowrap;
+  }
+
+  .state.is-ok {
+    background: var(--add-soft);
+    color: var(--add);
+    box-shadow: none;
+  }
+
+  .state.is-bad {
+    background: var(--del-soft);
+    color: var(--del);
+    box-shadow: none;
+  }
+
+  .commands {
+    display: grid;
+    gap: var(--space-3);
+  }
+
+  .commands li {
+    display: grid;
+    gap: 2px;
+  }
+
+  .cmd {
+    font-family: var(--font-mono);
+    font-size: 0.875rem;
+    overflow-wrap: anywhere;
+  }
+</style>

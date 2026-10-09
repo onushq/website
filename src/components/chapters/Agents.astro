@@ -1,9 +1,11 @@
 ---
-const asks = [
-  { name: "Speak MCP or run a CLI", body: "Run tests in environments, submit, ask the judge, all over MCP. Any agent that can run a shell command can use Onus." },
-  { name: "Work inside its token", body: "And ask for more through escalation, with evidence." },
-  { name: "Submit evidence with every change", body: "Intent, the semantic report, the tests behind it." },
+const steps = [
+  { when: "Before it writes", tools: ["onus_impact", "onus_dependents", "onus_tests_for", "onus_invariants"], body: "What a change would break, who uses it, and which tests cover it." },
+  { when: "Before it finishes", tools: ["onus_check"], body: "The changes in meaning of its own work, with a checklist of what to verify." },
+  { when: "To hand work in", tools: ["onus_env_run", "onus_submit", "onus_judge"], body: "Tests run in an environment, a submission with that evidence, the judge's verdict." },
+  { when: "When it needs more", tools: ["onus_escalate", "onus_escalation"], body: "Rights its token lacks, asked for with evidence and decided by policy or a person." },
 ];
+const agents = ["Claude Code", "Codex", "Copilot", "Cursor", "Devin", "Jules", "Aider"];
 ---
 
 <section class="chapter" id="agents" data-phase="6" aria-labelledby="agents-title">
@@ -11,19 +13,30 @@ const asks = [
     <div class="chapter-copy wide">
       <h2 class="display-l" id="agents-title">Any agent. Same rules.</h2>
       <p class="body-l">
-        Onus isn't an agent and doesn't pick one for you. Codex, Claude Code or one you built yourself: each gets
-        the same scopes, lanes and review, and earns its own track record. CI keeps that record from what happens to its pull requests: merged, reverted, or the cause of an incident.
+        Onus isn't an agent and doesn't pick one for you. Agents work through it over MCP, or a CLI if they can run a
+        shell command. Each gets the same scopes, lanes and judge, and earns its own track record.
       </p>
-      <ul class="asks">
+      <pre class="o-code"><code><span class="o-code__line"><span class="prompt" aria-hidden="true">$ </span>claude mcp add onus -- onus mcp</span><span class="o-code__line o-code__line--quiet"># any MCP client: onus mcp</span></code></pre>
+      <ol class="steps">
         {
-          asks.map((a) => (
+          steps.map((s) => (
             <li>
-              <h3 class="title">{a.name}</h3>
-              <p class="muted">{a.body}</p>
+              <h3 class="title">{s.when}</h3>
+              <p class="muted">{s.body}</p>
+              <p class="tools">
+                {s.tools.map((t) => (
+                  <code class="code">{t}</code>
+                ))}
+              </p>
             </li>
           ))
         }
-      </ul>
+      </ol>
+      <p class="body muted">
+        Agents cannot approve themselves: they cannot record outcomes, grant escalations, mint tokens or choose the scope
+        they are checked against. Pull requests are attributed to {agents.slice(0, -1).join(", ")} and {agents.at(-1)} by
+        their branch or bot, and to anything else by an <code class="code">Onus-Agent:</code> trailer.
+      </p>
       <p class="display-s swap">Swap every agent overnight and nothing in Onus changes. Only the track records start fresh.</p>
     </div>
   </div>
@@ -35,17 +48,25 @@ const asks = [
   }
 
   .wide .body-l {
-    max-width: 36rem;
+    max-width: 38rem;
   }
 
-  .asks {
+  .o-code {
+    max-width: 34rem;
+  }
+
+  .prompt {
+    color: var(--ink-faint);
+  }
+
+  .steps {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 11.5rem), 1fr));
     gap: var(--space-5);
-    margin-top: var(--space-4);
+    margin-top: var(--space-2);
   }
 
-  .asks li {
+  .steps li {
     display: grid;
     gap: var(--space-2);
     align-content: start;
@@ -53,12 +74,22 @@ const asks = [
     border-top: 2px solid var(--ink);
   }
 
-  .asks .title {
-    font-size: 1.1875rem;
+  .steps .title {
+    font-size: 1.0625rem;
+  }
+
+  .tools {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-1);
+  }
+
+  .tools .code {
+    font-size: 0.75rem;
   }
 
   .swap {
-    margin-top: var(--space-6);
+    margin-top: var(--space-4);
     max-width: 28ch;
   }
 </style>

@@ -20,7 +20,7 @@ const action = [
     <div class="chapter-copy">
       <h2 class="display-l" id="install-title">Try it on your next pull request.</h2>
       <p class="body-l">
-        All five phases are out, in one binary. Reports only read files and send nothing anywhere; Onus runs your
+        Everything on this page is in one binary. Reports only read files and send nothing anywhere; Onus runs your
         code only when you ask it to, in a container.
       </p>
     </div>
@@ -50,7 +50,8 @@ const action = [
           <pre class="o-code"><code>{action.map((line) => <span class="o-code__line">{line}</span>)}</code></pre>
           <p class="caption muted">
             The GitHub Action posts the report as one comment, updated on each push, and fails the job only on what you
-            list in <code class="code">fail-on</code>.
+            list in <code class="code">fail-on</code>. Add <code class="code">records: true</code> and it also keeps
+            each agent's track record (<a href="/docs/ci">permissions and events</a>).
           </p>
         </div>
       </div>

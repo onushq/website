@@ -286,37 +286,45 @@ export function buildField(count: number): Field {
     formations.push(f);
   }
 
-  // 5. Two moments of human attention: the change end to end, ten steps on one path.
+  // 5. Track records: weeks of changes stacked by lane. Auto-merge grows as an agent's
+  //    record does; an incident takes auto-merge away again.
   {
-    const f = make("track");
-    f.scale = [0.06, 0.06, 0.06];
-    f.camera = { pos: [-0.7, 1.8, 17], target: [-0.7, 0, 0] };
-    const P = (u: number): [number, number, number] => [
-      -4.8 + 9.6 * u,
-      0.5 * Math.sin(u * Math.PI * 2),
-      -1.2 * Math.sin(u * Math.PI),
-    ];
-    const steps = ["Intent", "Plan", "Token", "Build", "Escalate", "Apply", "Route", "Verify", "Review", "Roll out"];
+    const f = make("record");
+    f.scale = [0.085, 0.045, 0.085];
+    f.camera = { pos: [1.4, 0.9, 13.5], target: [1.4, 0.2, 0] };
+    // Bottom to top: H a person, J the judge, A auto-merge, R an incident.
+    const weeks = ["HHHJ", "HHJJ", "HHJJJ", "HJJJJA", "HJJJAA", "HJJAAA", "HJJAAAR", "HHHJJJ", "HJJJAAA", "HJJAAAAA"];
+    const codes: Record<string, number> = { H: SIGNAL, J: INK, A: GREEN, R: RED };
+    const x0 = -1.0;
+    const dx = 0.68;
+    const base = -2.3;
+    const cols = 5;
+    const rows = 4;
+    const cw = 0.1;
+    const ch = 0.062;
+    const gap = 0.07;
+    const blockH = rows * ch + gap;
     let i = 0;
-    const pathDots = Math.min(1200, Math.floor(count * 0.12));
-    for (let k = 0; k < pathDots; k++, i++) {
-      const [x, y, z] = P(k / pathDots);
-      set(f, i, x, y, z, 0.6, INK);
-    }
-    steps.forEach((name, k) => {
-      const person = k === 0 || k === 8;
-      const c = P(k / 9);
-      const n = person ? 380 : 150;
-      const rad = person ? 0.42 : 0.22;
-      for (let m = 0; m < n && i < count; m++, i++) {
-        const [dx, dy, dz] = inSphere(r, rad);
-        set(f, i, c[0] + dx, c[1] + dy, c[2] + dz, person ? 1.1 : 0.9, person ? SIGNAL : INK);
-      }
-      const up = k % 2 === 0;
-      const off = person ? 0.8 : 0.55;
-      f.labels.push({ text: name, pos: [c[0], c[1] + (up ? off : -off - 0.35), c[2]], signal: person });
+    weeks.forEach((week, w) => {
+      const x = x0 + w * dx;
+      [...week].forEach((kind, b) => {
+        const y = base + b * blockH;
+        for (let row = 0; row < rows; row++) {
+          for (let col = 0; col < cols && i < count; col++, i++) {
+            set(f, i, x - (cols * cw) / 2 + (col + 0.5) * cw, y + (row + 0.5) * ch, (r() - 0.5) * 0.05, 1, codes[kind]);
+          }
+        }
+      });
+      const top = base + week.length * blockH;
+      if (w === 0) f.labels.push({ text: "A person reviews", pos: [x - 0.3, top + 0.3, 0], signal: true, align: "left" });
+      if (w === 6) f.labels.push({ text: "Incident: auto-merge lost", pos: [x, top + 0.3, 0], signal: true });
+      if (w === weeks.length - 1) f.labels.push({ text: "Auto-merge, earned", pos: [x + 0.3, top + 0.3, 0], align: "right" });
     });
-    for (; i < count; i++) set(f, i, 0, 0, -2, 0, INK);
+    // A baseline under the weeks.
+    for (let k = 0; k < 160 && i < count; k++, i++) {
+      set(f, i, x0 - 0.4 + (k / 159) * (dx * (weeks.length - 1) + 0.8), base - 0.12, 0, 0.7, INK);
+    }
+    for (; i < count; i++) set(f, i, 1.4, base, -2, 0, INK);
     formations.push(f);
   }
 

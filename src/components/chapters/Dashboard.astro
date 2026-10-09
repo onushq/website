@@ -1,8 +1,32 @@
 ---
 const views = [
-  { name: "The map", body: "The component graph, then every component, symbol and file: what depends on it, its tests, and what a change would break." },
-  { name: "Changes", body: "What your uncommitted work means, or any two refs, with the lane it takes and why." },
-  { name: "Decisions", body: "Submit to the judge, run tests in environments, answer escalations, read the audit log, and follow each agent's track record week by week." },
+  {
+    id: "changes",
+    name: "Changes",
+    body: "What your uncommitted work means, or any two refs, with the lane it takes and why.",
+    src: "/screens/changes-dark.webp",
+    path: "/changes",
+    alt: "The Onus web interface reporting a change: four changes in meaning, one needing a person because customer phone numbers now leave the system through a new SMS vendor, and the lane it takes.",
+    caption: "A 1,408-line pull request, read as four changes in meaning. The one that sends phone numbers to a new vendor comes first, and the change goes to a person.",
+  },
+  {
+    id: "map",
+    name: "The map",
+    body: "The component graph, then every component, symbol and file: what depends on it, its tests, and what a change would break.",
+    src: "/screens/map-dark.webp",
+    path: "/map",
+    alt: "The component graph of Twenty in the Onus web interface: 19 components in layers, from the front end and server down to the shared packages, with 31,123 files and 71,788 symbols mapped.",
+    caption: "Twenty's 31,123 files as 19 components and the dependencies between them, read from the code without any configuration.",
+  },
+  {
+    id: "outcomes",
+    name: "Track records",
+    body: "Changes by week and lane, each agent's progress toward auto-merge, and the pull requests in flight.",
+    src: "/screens/outcomes-dark.webp",
+    path: "/outcomes",
+    alt: "The Outcomes page: totals, a weekly chart of changes by lane, agent setups with their auto-merge eligibility, and pull requests in flight.",
+    caption: "Records kept by the GitHub Action on a branch of the repository. Here one agent has earned auto-merge and another lost it to an incident (demo data).",
+  },
 ];
 ---
 
@@ -16,35 +40,65 @@ const views = [
       </p>
     </div>
 
-    <figure class="shot">
-      <div class="frame">
-        <div class="bar" aria-hidden="true"><span></span><span></span><span></span><code>127.0.0.1:4387/changes</code></div>
-        <img
-          src="/screens/changes-dark.webp"
-          width="1920"
-          height="1200"
-          loading="lazy"
-          decoding="async"
-          alt="The Onus web interface reporting a change: four changes in meaning, one needing a person because customer phone numbers now leave the system through a new SMS vendor, and the lane it takes."
-        />
+    <div class="gallery" data-gallery>
+      <div class="views" role="tablist" aria-label="Pages of onus ui">
+        {
+          views.map((v, i) => (
+            <button
+              class="view"
+              type="button"
+              role="tab"
+              id={`shot-tab-${v.id}`}
+              aria-controls={`shot-${v.id}`}
+              aria-selected={i === 0 ? "true" : "false"}
+              tabindex={i === 0 ? 0 : -1}
+            >
+              <span class="title">{v.name}</span>
+              <span class="muted">{v.body}</span>
+            </button>
+          ))
+        }
       </div>
-      <figcaption class="caption muted">
-        A 1,408-line pull request, read as four changes in meaning. The one that sends phone numbers to a new vendor comes first, and the change goes to a person.
-      </figcaption>
-    </figure>
 
-    <ul class="views">
       {
-        views.map((v) => (
-          <li>
-            <h3 class="title">{v.name}</h3>
-            <p class="muted">{v.body}</p>
-          </li>
+        views.map((v, i) => (
+          <figure class="shot" role="tabpanel" id={`shot-${v.id}`} aria-labelledby={`shot-tab-${v.id}`} hidden={i !== 0}>
+            <div class="frame">
+              <div class="bar" aria-hidden="true"><span></span><span></span><span></span><code>127.0.0.1:4387{v.path}</code></div>
+              <img src={v.src} width="1920" height="1200" loading="lazy" decoding="async" alt={v.alt} />
+            </div>
+            <figcaption class="caption muted">{v.caption}</figcaption>
+          </figure>
         ))
       }
-    </ul>
+    </div>
   </div>
 </section>
+
+<script>
+  for (const root of document.querySelectorAll<HTMLElement>("[data-gallery]")) {
+    const tabs = Array.from(root.querySelectorAll<HTMLButtonElement>("[role=tab]"));
+    const select = (k: number, focus = false) => {
+      tabs.forEach((t, i) => {
+        const on = i === k;
+        t.setAttribute("aria-selected", String(on));
+        t.tabIndex = on ? 0 : -1;
+        document.getElementById(t.getAttribute("aria-controls")!)!.hidden = !on;
+      });
+      if (focus) tabs[k].focus();
+    };
+    tabs.forEach((t, i) => {
+      t.addEventListener("click", () => select(i));
+      t.addEventListener("keydown", (e) => {
+        const d = e.key === "ArrowRight" ? 1 : e.key === "ArrowLeft" ? -1 : 0;
+        if (d) {
+          e.preventDefault();
+          select((i + d + tabs.length) % tabs.length, true);
+        }
+      });
+    });
+  }
+</script>
 
 <style>
   .dashboard > .wrap {
@@ -99,21 +153,56 @@ const views = [
     height: auto;
   }
 
-  .views {
+  .gallery {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr));
     gap: var(--space-5);
   }
 
-  .views li {
+  .shot[hidden] {
+    display: none;
+  }
+
+  .views {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-5);
+  }
+
+  .view {
     display: grid;
     gap: var(--space-2);
     align-content: start;
-    padding-top: var(--space-4);
-    border-top: 2px solid var(--ink);
+    padding: var(--space-4) 0 0;
+    border: 0;
+    border-top: 2px solid color-mix(in srgb, var(--ink) 22%, transparent);
+    background: none;
+    color: var(--ink);
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+    transition: border-color 0.2s ease;
   }
 
-  .views .title {
+  .view:hover {
+    border-top-color: color-mix(in srgb, var(--ink) 55%, transparent);
+  }
+
+  .view[aria-selected="true"] {
+    border-top-color: var(--signal);
+  }
+
+  .view .title {
     font-size: 1.1875rem;
+  }
+
+  @media (max-width: 48rem) {
+    .views {
+      grid-template-columns: 1fr;
+      gap: var(--space-3);
+    }
+
+    .view .muted {
+      display: none;
+    }
   }
 </style>

@@ -1,0 +1,260 @@
+---
+import { examples, examplesRepo } from "../../data/examples";
+
+// `code` spans in report text; everything else is escaped.
+const esc = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+const md = (s: string) => esc(s).replace(/`([^`]+)`/g, '<code class="code">$1</code>');
+const n = (x: number) => x.toLocaleString("en-US");
+---
+
+<section class="chapter examples" id="examples" data-phase="2" aria-labelledby="examples-title">
+  <div class="wrap">
+    <div class="chapter-copy wide">
+      <h2 class="display-l" id="examples-title">Real pull requests, read.</h2>
+      <p class="body-l">
+        Four merged pull requests from Twenty, an open-source CRM with 31,000 TypeScript files. These are Onus's
+        reports, row for row, with long file lists shortened. Nothing in the repository was run.
+      </p>
+    </div>
+
+    <div class="viewer" data-examples>
+      <div class="tabs" role="tablist" aria-label="Pull requests">
+        {
+          examples.map((e, i) => (
+            <button
+              class="tab"
+              type="button"
+              role="tab"
+              id={`ex-tab-${e.pr}`}
+              aria-controls={`ex-${e.pr}`}
+              aria-selected={i === 0 ? "true" : "false"}
+              tabindex={i === 0 ? 0 : -1}
+            >
+              <span class="tab-name">{e.short}</span>
+              <span class="tab-meta caption">
+                #{e.pr} · {n(e.add + e.del)} lines · {e.rows.filter((r) => r.flag).length || "no"} for a person
+              </span>
+            </button>
+          ))
+        }
+      </div>
+
+      {
+        examples.map((e, i) => {
+          const flagged = e.rows.filter((r) => r.flag).length;
+          return (
+            <article class="panel glass" role="tabpanel" id={`ex-${e.pr}`} aria-labelledby={`ex-tab-${e.pr}`} hidden={i !== 0}>
+              <header class="panel-head">
+                <div>
+                  <p class="label muted">
+                    <a href={`${examplesRepo}/pull/${e.pr}`}>twentyhq/twenty#{e.pr}</a>
+                  </p>
+                  <h3 class="title">{e.title}</h3>
+                </div>
+                <p class="stats caption">
+                  <span class="o-diffstat__add">+{n(e.add)}</span> <span class="o-diffstat__del">−{n(e.del)}</span> in {e.files} files
+                  <span class="sep">→</span>
+                  <b>{e.rows.length + e.more} rows</b>, {flagged ? `${flagged} for a person` : "none for a person"}
+                </p>
+              </header>
+              <ul class="rows">
+                {e.rows.map((r) => (
+                  <li class:list={["o-row", r.flag && "o-row--signal"]}>
+                    <span class="o-row__change">
+                      <span class="dot" aria-label={r.flag ? "Needs a person" : "Informational"}>{r.flag ? "●" : "○"}</span>{" "}
+                      <Fragment set:html={md(r.title)} />
+                    </span>
+                    <span class="o-row__meta">
+                      <span class="o-row__kind">{r.kind}</span>
+                      <span set:html={md(r.why)} />
+                    </span>
+                  </li>
+                ))}
+              </ul>
+              {e.more > 0 && <p class="caption muted more">and {e.more} more quiet {e.more === 1 ? "row" : "rows"}</p>}
+              <p class="note body">{e.note}</p>
+            </article>
+          );
+        })
+      }
+    </div>
+    <p class="caption muted foot">
+      How these were checked, and what is still weak:{" "}
+      <a href="https://github.com/onushq/onus/blob/main/docs/evaluation/2026-10-08-m7-replay.md">the report accuracy audit</a>.
+    </p>
+  </div>
+</section>
+
+<script>
+  for (const root of document.querySelectorAll<HTMLElement>("[data-examples]")) {
+    const tabs = Array.from(root.querySelectorAll<HTMLButtonElement>("[role=tab]"));
+    const select = (k: number, focus = false) => {
+      tabs.forEach((t, i) => {
+        const on = i === k;
+        t.setAttribute("aria-selected", String(on));
+        t.tabIndex = on ? 0 : -1;
+        document.getElementById(t.getAttribute("aria-controls")!)!.hidden = !on;
+      });
+      if (focus) tabs[k].focus();
+    };
+    tabs.forEach((t, i) => {
+      t.addEventListener("click", () => select(i));
+      t.addEventListener("keydown", (e) => {
+        const d = e.key === "ArrowRight" ? 1 : e.key === "ArrowLeft" ? -1 : 0;
+        if (d) {
+          e.preventDefault();
+          select((i + d + tabs.length) % tabs.length, true);
+        }
+      });
+    });
+  }
+</script>
+
+<style>
+  /* Dense content: dim the scene behind it, fading in and out at the edges. */
+  .examples {
+    background: linear-gradient(
+      180deg,
+      transparent,
+      color-mix(in srgb, var(--canvas) 90%, transparent) 14%,
+      color-mix(in srgb, var(--canvas) 90%, transparent) 86%,
+      transparent
+    );
+  }
+
+  .examples > .wrap {
+    display: grid;
+    gap: clamp(var(--space-6), 1.5rem + 2vw, var(--space-7));
+  }
+
+  .wide {
+    max-width: 44rem;
+  }
+
+  .viewer {
+    display: grid;
+    gap: var(--space-4);
+    max-width: 62rem;
+  }
+
+  .tabs {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: var(--space-2);
+  }
+
+  .tab {
+    display: grid;
+    gap: 2px;
+    padding: var(--space-3) var(--space-4);
+    border: 1px solid color-mix(in srgb, var(--ink) 12%, transparent);
+    border-radius: var(--radius-s);
+    background: color-mix(in srgb, var(--surface) 60%, transparent);
+    color: var(--ink);
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+  }
+
+  .tab:hover {
+    border-color: color-mix(in srgb, var(--ink) 30%, transparent);
+  }
+
+  .tab[aria-selected="true"] {
+    background: var(--ink);
+    border-color: var(--ink);
+    color: var(--canvas);
+  }
+
+  .tab[aria-selected="true"] .tab-meta {
+    color: color-mix(in srgb, var(--canvas) 72%, transparent);
+  }
+
+  .tab-name {
+    font-weight: 620;
+  }
+
+  .tab-meta {
+    color: var(--ink-muted);
+  }
+
+  .panel {
+    display: grid;
+    gap: var(--space-4);
+    padding: clamp(var(--space-4), 1rem + 1vw, var(--space-6));
+  }
+
+  .panel[hidden] {
+    display: none;
+  }
+
+  .panel-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: var(--space-2) var(--space-5);
+  }
+
+  .panel-head .label a {
+    color: inherit;
+  }
+
+  .panel-head .title {
+    font-size: 1.25rem;
+    margin-top: 2px;
+  }
+
+  .stats {
+    color: var(--ink-muted);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .stats b {
+    color: var(--ink);
+    font-weight: 650;
+  }
+
+  .sep {
+    margin-inline: var(--space-2);
+  }
+
+  .rows {
+    display: grid;
+    gap: var(--space-2);
+  }
+
+  .rows .o-row__change,
+  .rows .o-row__meta {
+    overflow-wrap: anywhere;
+  }
+
+  .dot {
+    font-size: 0.8em;
+    vertical-align: 0.08em;
+  }
+
+  .more {
+    margin-top: calc(-1 * var(--space-2));
+  }
+
+  .note {
+    padding-left: var(--space-4);
+    border-left: 2px solid var(--signal);
+    color: var(--ink);
+    max-width: 48rem;
+  }
+
+  .foot a {
+    color: inherit;
+  }
+
+  @media (max-width: 52rem) {
+    .tabs {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+</style>

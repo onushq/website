@@ -1,0 +1,233 @@
+---
+// Every number here comes from an evaluation in the Onus repository; each group links to its method.
+const docs = "https://github.com/onushq/onus/blob/main/docs";
+
+const accuracy = [
+  { label: "Dependents the TypeScript compiler finds that Onus also finds", value: 99.9, shown: "99.9%", signal: true },
+  { label: "Dependents Onus reports that the compiler confirms", value: 92.3, shown: "92.3%" },
+];
+
+const audit = [
+  { label: "Rows with a wrong fact", before: "7%", after: "under 1%" },
+  { label: "High-severity misses, in 20 pull requests", before: "9", after: "1" },
+  { label: "Flag precision, 1 to 5", before: "2.05", after: "3.5" },
+  { label: "Usefulness, 1 to 5", before: "2.1", after: "3.0" },
+];
+
+const speed = [
+  { what: "Map the whole repository", time: "3.5 s" },
+  { what: "A question to the warm map", time: "under 1 ms" },
+  { what: "The first question after an edit", time: "2.0 s" },
+  { what: "Eight agents asking at once after an edit", time: "1.7 s" },
+  { what: "A pull request report, base map cached", time: "12 s" },
+];
+---
+
+<section class="chapter benchmarks" id="benchmarks" data-phase="6" aria-labelledby="benchmarks-title">
+  <div class="wrap">
+    <div class="chapter-copy wide">
+      <h2 class="display-l" id="benchmarks-title">Measured, not claimed.</h2>
+      <p class="body-l">
+        Measured on Twenty, an open-source TypeScript monorepo with 31,000 files, 72,000 symbols and 272,000
+        dependencies, on a laptop. Each method is published, including the results that went against us.
+      </p>
+    </div>
+
+    <div class="grid">
+      <article class="card glass">
+        <p class="label muted">Is the map right?</p>
+        <h3 class="title">Who depends on a symbol, against the compiler</h3>
+        <div class="o-bars">
+          {
+            accuracy.map((a) => (
+              <div class="o-bar">
+                <span class="o-bar__label">{a.label}</span>
+                <div class="o-bar__track">
+                  <div class:list={["o-bar__fill", a.signal && "o-bar__fill--signal"]} style={`width: ${a.value * 0.78}%`} />
+                  <span class="o-bar__value" style={`left: ${a.value * 0.78}%`}>{a.shown}</span>
+                </div>
+              </div>
+            ))
+          }
+        </div>
+        <p class="caption muted">
+          100 sampled symbols, 2,584 files. Most of the extra files are barrels that re-export a symbol: they break when it
+          is renamed, though the compiler does not count them.{" "}
+          <a href={`${docs}/evaluation/2026-10-08-references-benchmark.md`}>Method</a>
+        </p>
+      </article>
+
+      <article class="card glass">
+        <p class="label muted">Are the reports right?</p>
+        <h3 class="title">20 large merged pull requests, audited row by row</h3>
+        <table>
+          <thead>
+            <tr><th scope="col"></th><th scope="col">First audit</th><th scope="col">After fixes</th></tr>
+          </thead>
+          <tbody>
+            {
+              audit.map((a) => (
+                <tr>
+                  <th scope="row">{a.label}</th>
+                  <td class="before">{a.before}</td>
+                  <td class="after">{a.after}</td>
+                </tr>
+              ))
+            }
+          </tbody>
+        </table>
+        <p class="caption muted">
+          Every kind of mistake found became a regression case that runs with the test suite.{" "}
+          <a href={`${docs}/evaluation/2026-10-08-m7-replay.md`}>Method</a>
+        </p>
+      </article>
+
+      <article class="card glass">
+        <p class="label muted">Is it fast?</p>
+        <h3 class="title">On the 31,000-file repository</h3>
+        <dl class="speed">
+          {
+            speed.map((s) => (
+              <div>
+                <dt>{s.what}</dt>
+                <dd>{s.time}</dd>
+              </div>
+            ))
+          }
+        </dl>
+        <p class="caption muted">
+          One map server per repository, shared by every agent and worktree; facts are cached by file content.{" "}
+          <a href={`${docs}/adr/0007-map-server-for-agents.md`}>Method</a>
+        </p>
+      </article>
+
+      <article class="card glass against">
+        <p class="label muted">What didn't work</p>
+        <h3 class="title">The map didn't make agents faster or better</h3>
+        <p class="body">
+          In a blind A/B test on a real Twenty feature, agents with the map tools took 231 s and scored 7.5 of 10;
+          without them, 235 s and 7.8. They explored with <code class="code">grep</code> anyway. What they did use,
+          unprompted, was <code class="code">onus_check</code> before finishing. A second round with a sharper check
+          did no better (6.3 against 8.0): a clean check read as “done”, so every answer now says what it does not
+          verify. Onus puts its effort into checking work, not guiding it.
+        </p>
+        <p class="caption muted">
+          Claude Code with Sonnet, three runs per condition, graded blind against the shipped change.{" "}
+          <a href={`${docs}/evaluation/2026-10-07-map-for-agents.md`}>Method</a>
+        </p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<style>
+  /* Dense content: dim the scene behind it, fading in and out at the edges. */
+  .benchmarks {
+    background: linear-gradient(
+      180deg,
+      transparent,
+      color-mix(in srgb, var(--canvas) 90%, transparent) 14%,
+      color-mix(in srgb, var(--canvas) 90%, transparent) 86%,
+      transparent
+    );
+  }
+
+  .benchmarks > .wrap {
+    display: grid;
+    gap: clamp(var(--space-6), 1.5rem + 2vw, var(--space-7));
+  }
+
+  .wide {
+    max-width: 46rem;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-4);
+  }
+
+  .card {
+    display: grid;
+    gap: var(--space-4);
+    align-content: start;
+    padding: clamp(var(--space-4), 1rem + 1vw, var(--space-6));
+  }
+
+  .card .title {
+    font-size: 1.1875rem;
+    margin-top: calc(-1 * var(--space-3));
+  }
+
+  .card .caption a {
+    color: inherit;
+    font-weight: 600;
+  }
+
+  .against {
+    border-color: color-mix(in srgb, var(--signal) 55%, transparent);
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9375rem;
+    font-variant-numeric: tabular-nums;
+  }
+
+  thead th {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--ink-muted);
+    text-align: right;
+    padding-bottom: var(--space-2);
+  }
+
+  tbody th {
+    text-align: left;
+    font-weight: 400;
+    padding: var(--space-2) var(--space-3) var(--space-2) 0;
+    border-top: 1px solid color-mix(in srgb, var(--ink) 10%, transparent);
+  }
+
+  td {
+    text-align: right;
+    padding: var(--space-2) 0 var(--space-2) var(--space-3);
+    border-top: 1px solid color-mix(in srgb, var(--ink) 10%, transparent);
+    white-space: nowrap;
+  }
+
+  .before {
+    color: var(--ink-muted);
+  }
+
+  .after {
+    font-weight: 650;
+  }
+
+  .speed {
+    display: grid;
+    gap: 0;
+    font-size: 0.9375rem;
+  }
+
+  .speed div {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--space-4);
+    padding: var(--space-2) 0;
+    border-top: 1px solid color-mix(in srgb, var(--ink) 10%, transparent);
+  }
+
+  .speed dd {
+    font-weight: 650;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+
+  @media (max-width: 56rem) {
+    .grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
