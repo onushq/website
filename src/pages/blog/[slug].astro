@@ -1,0 +1,76 @@
+---
+export const prerender = true;
+
+import { render } from "astro:content";
+import Base from "../../layouts/Base.astro";
+import Header from "../../components/Header.astro";
+import Footer from "../../components/Footer.astro";
+import { formatDate, publishedPosts, readingMinutes, type Post } from "../../lib/blog";
+import "../../styles/blog.css";
+
+export async function getStaticPaths() {
+  const posts = await publishedPosts();
+  return posts.map((post) => ({ params: { slug: post.id }, props: { post } }));
+}
+
+const { post } = Astro.props as { post: Post };
+const { Content, headings } = await render(post);
+const sections = headings.filter((h) => h.depth === 2);
+---
+
+<Base
+  title={`${post.data.title} | Onus`}
+  description={post.data.description}
+  article={{ published: post.data.date, author: post.data.author }}
+>
+  <Header />
+  <main id="main" class="blog-main">
+    <article class="post">
+      <header class="wrap post-head">
+        <a class="label muted back" href="/blog">← Blog</a>
+        <h1 class="display-m">{post.data.title}</h1>
+        <p class="caption muted byline">
+          <time datetime={post.data.date.toISOString()}>{formatDate(post.data.date)}</time> · {post.data.author} ·{" "}
+          {readingMinutes(post)} min read
+        </p>
+      </header>
+
+      {
+        sections.length > 3 && (
+          <nav class="wrap toc" aria-label="Contents">
+            <details>
+              <summary class="label">Contents · {sections.length} sections</summary>
+              <ol>
+                {sections.map((h) => (
+                  <li>
+                    <a href={`#${h.slug}`}>{h.text}</a>
+                  </li>
+                ))}
+              </ol>
+            </details>
+          </nav>
+        )
+      }
+
+      <div class="wrap">
+        <div class="prose">
+          <Content />
+        </div>
+      </div>
+
+      <aside class="wrap post-cta" aria-label="About Onus">
+        <div class="cta-box">
+          <p class="title">Onus is the open-source layer built on this paradigm.</p>
+          <p class="muted">
+            It reads each change for what it means, routes it by risk, and approves it on evidence. One binary, any agent.
+          </p>
+          <div class="cta-actions">
+            <a class="o-button o-button--primary" href="/#install">Install Onus</a>
+            <a class="o-button o-button--quiet" href="/docs">Read the docs</a>
+          </div>
+        </div>
+      </aside>
+    </article>
+  </main>
+  <Footer showSources={false} />
+</Base>

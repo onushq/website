@@ -1,0 +1,138 @@
+---
+// Five phases, each useful alone, with a measurable gate before the next.
+import Figure from "./Figure.astro";
+
+const phases = [
+  {
+    title: "Semantic change reports on today's pull requests",
+    what: "A bot posts a meaning-level summary on every pull request. No new workflow needed.",
+    alone: "big agent PRs become reviewable, and the first version of the map gets built.",
+    gate: "reviewers prefer the report to the raw diff on large pull requests",
+  },
+  {
+    title: "The map as a service",
+    what: "Agents and people query components, contracts, owners and test coverage through MCP and a CLI.",
+    alone: "agents stop guessing about structure, and context costs drop.",
+    gate: "map answers match reality on a sampled set of questions",
+  },
+  {
+    title: "Scoped tokens and evidence-based escalation",
+    what: "Per-task, path-level tokens enforced at a git gateway and MCP servers; structured escalation.",
+    alone: "a hijacked agent can only reach what its task needed.",
+    gate: "escalations are rare enough not to stall work, and no writes land out of scope",
+  },
+  {
+    title: "Risk lanes and the verifying judge",
+    what: "Rules-first routing into auto-merge, judge and human lanes; the judge re-runs the evidence.",
+    alone: "human attention concentrates on the risky slice.",
+    gate: "audits of auto-approved changes find an acceptably low miss rate",
+  },
+  {
+    title: "Evidence factory, production loop, contract-level scopes",
+    what: "Disposable environments by default, outcomes retrain the classifier, scopes move from paths to contracts.",
+    alone: "the system gets safer and faster the longer it runs.",
+  },
+];
+---
+
+<Figure
+  label="roadmap · 5 phases, 4 gates"
+  title="Each phase is useful on its own, and each gate earns the next"
+  caption="Each phase ships something useful on its own, and each gate is a measurable reason to start the next one."
+>
+  <ol class="roadmap">
+    {
+      phases.map((p, i) => (
+        <li>
+          <div class:list={["phase", { first: i === 0 }]}>
+            <p class="phase-title">
+              <span class="n code">{i + 1}</span>
+              {p.title}
+            </p>
+            <p>{p.what}</p>
+            <p class="alone">Useful alone: {p.alone}</p>
+          </div>
+          {p.gate && (
+            <p class="gate">
+              <span class="diamond" aria-hidden="true" />
+              <span>Gate: {p.gate}</span>
+            </p>
+          )}
+        </li>
+      ))
+    }
+  </ol>
+</Figure>
+
+<style>
+  .roadmap {
+    display: grid;
+  }
+
+  .phase {
+    display: grid;
+    gap: var(--space-1);
+    padding: var(--space-4) var(--space-5);
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-s);
+    font-size: 0.9375rem;
+    line-height: 1.45;
+  }
+
+  .first {
+    border: 1.5px solid var(--ink-muted);
+  }
+
+  .phase-title {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-3);
+    font-size: 1rem;
+    font-weight: 620;
+  }
+
+  .n {
+    flex: none;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: var(--ink-faint);
+  }
+
+  .alone {
+    color: var(--ink-muted);
+    font-size: 0.875rem;
+  }
+
+  .gate {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    min-height: 3.5rem;
+    padding-left: var(--space-5);
+    font-size: 0.875rem;
+    color: var(--ink-muted);
+  }
+
+  /* The rail runs from one phase to the next, through the gate's diamond. */
+  .gate::before {
+    content: "";
+    position: absolute;
+    left: calc(var(--space-5) + 7px);
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: var(--ink-faint);
+  }
+
+  .diamond {
+    position: relative;
+    flex: none;
+    width: 15px;
+    height: 15px;
+    transform: rotate(45deg);
+    background: var(--sunken);
+    border: 1px solid var(--ink-faint);
+  }
+</style>

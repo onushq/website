@@ -1,12 +1,14 @@
 // @ts-check
 import { defineConfig } from "astro/config";
 import vercel from "@astrojs/vercel";
+import mdx from "@astrojs/mdx";
 
-// The story page is prerendered; /docs is rendered on demand by Farming Labs
+// The story page and the blog are prerendered; /docs is rendered on demand by Farming Labs
 // Docs (search, Markdown routes, llms.txt and the MCP endpoint need a server).
 export default defineConfig({
   site: "https://onushq.com",
   output: "server",
+  integrations: [mdx()],
   adapter: vercel({
     webAnalytics: {
       enabled: true,

@@ -1,0 +1,313 @@
+/*
+  The blog: the post list and the reading layout. Posts read at normal width
+  (Archivo's reading axis); figures and tables break out to a wider column.
+*/
+
+.blog-main {
+  padding-top: calc(72px + clamp(var(--space-7), 6vw, var(--space-9)));
+  padding-bottom: var(--space-9);
+}
+
+/* ---- The list ---- */
+.blog-head {
+  display: grid;
+  gap: var(--space-5);
+  max-width: 52rem;
+}
+
+.blog-head .body-l a {
+  color: var(--ink);
+}
+
+.post-list {
+  margin-top: clamp(var(--space-7), 5vw, var(--space-9));
+  display: grid;
+  gap: var(--space-4);
+}
+
+.post-card {
+  display: grid;
+  gap: var(--space-3);
+  max-width: 52rem;
+  padding: clamp(var(--space-5), 3vw, var(--space-6));
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-m);
+  text-decoration: none;
+  transition: border-color 0.2s ease;
+}
+
+.post-card:hover {
+  border-color: var(--control-border);
+}
+
+.post-card .read {
+  margin-top: var(--space-2);
+}
+
+/* ---- A post ---- */
+.post-head {
+  display: grid;
+  gap: var(--space-5);
+  max-width: 52rem;
+}
+
+.post-head .back {
+  text-decoration: none;
+}
+
+.post-head .back:hover {
+  color: var(--ink);
+}
+
+.post-head h1 {
+  max-width: 22ch;
+}
+
+.toc {
+  margin-top: var(--space-6);
+  max-width: 52rem;
+}
+
+.toc details {
+  border-block: 1px solid var(--line);
+  padding-block: var(--space-3);
+}
+
+.toc summary {
+  cursor: pointer;
+  color: var(--ink-muted);
+}
+
+.toc ol {
+  margin-top: var(--space-3);
+  columns: 2 16rem;
+  column-gap: var(--space-6);
+  list-style: decimal;
+  padding-left: 1.25rem;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: var(--ink-faint);
+}
+
+.toc li {
+  break-inside: avoid;
+  padding-block: 2px;
+}
+
+.toc a {
+  color: var(--ink-muted);
+  text-decoration: none;
+}
+
+.toc a:hover {
+  color: var(--ink);
+  text-decoration: underline;
+}
+
+/* The reading column, with a wider track for figures and tables. */
+.prose {
+  --measure: 40rem;
+  --wide: 56rem;
+  margin-top: clamp(var(--space-6), 4vw, var(--space-8));
+  display: grid;
+  grid-template-columns:
+    [wide-start] minmax(0, 1fr)
+    [content-start] minmax(0, var(--measure))
+    [content-end] minmax(0, 1fr)
+    [wide-end];
+  max-width: var(--wide);
+  font-size: 1.0625rem;
+  line-height: 1.7;
+}
+
+.prose > * {
+  grid-column: content;
+  margin-top: var(--space-5);
+}
+
+.prose > :first-child {
+  margin-top: 0;
+}
+
+.prose > .post-figure,
+.prose > table {
+  grid-column: wide;
+}
+
+.prose h2 {
+  margin-top: var(--space-8);
+  font-size: clamp(1.5rem, 1.2rem + 1vw, 1.875rem);
+  font-stretch: 115%;
+  font-weight: 620;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+}
+
+.prose h3 {
+  margin-top: var(--space-7);
+  font-size: 1.1875rem;
+  font-stretch: 110%;
+  font-weight: 620;
+  line-height: 1.3;
+}
+
+.prose h2 + *,
+.prose h3 + * {
+  margin-top: var(--space-4);
+}
+
+.prose :is(h2, h3) {
+  scroll-margin-top: 96px;
+}
+
+.prose > p,
+.prose > :is(ul, ol) > li {
+  color: color-mix(in srgb, var(--ink) 88%, var(--ink-muted));
+}
+
+.prose > * strong {
+  color: var(--ink);
+  font-weight: 620;
+}
+
+.prose a {
+  color: var(--ink);
+  text-decoration-color: color-mix(in srgb, var(--ink) 40%, transparent);
+}
+
+.prose a:hover {
+  text-decoration-color: var(--ink);
+}
+
+.prose > ul,
+.prose > ol {
+  display: grid;
+  gap: var(--space-2);
+  padding-left: 1.4rem;
+}
+
+.prose > ul {
+  list-style: disc;
+}
+
+.prose > ol {
+  list-style: decimal;
+}
+
+.prose > :is(ul, ol) > li::marker {
+  color: var(--ink-faint);
+}
+
+.prose blockquote {
+  margin-block: var(--space-6);
+  padding: var(--space-1) 0 var(--space-1) var(--space-5);
+  border-left: 2px solid var(--ink);
+}
+
+.prose blockquote p {
+  font-size: clamp(1.25rem, 1.05rem + 0.8vw, 1.5rem);
+  font-stretch: 112%;
+  font-weight: 560;
+  line-height: 1.35;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+
+.prose :not(pre) > code {
+  font-size: 0.875em;
+  padding: 0.1em 0.35em;
+  background: var(--sunken);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-xs);
+  white-space: nowrap;
+}
+
+/* Tables scroll sideways on narrow screens rather than squeezing their cells. */
+.prose table {
+  display: block;
+  overflow-x: auto;
+  margin-block: var(--space-6);
+  border-collapse: collapse;
+  font-size: 0.9375rem;
+  line-height: 1.45;
+}
+
+.prose thead th {
+  font-size: 0.8125rem;
+  font-stretch: 85%;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  color: var(--ink-muted);
+  text-align: left;
+  vertical-align: bottom;
+  border-bottom: 1px solid var(--control-border);
+}
+
+.prose th,
+.prose td {
+  min-width: 10rem;
+  padding: var(--space-3) var(--space-4) var(--space-3) 0;
+  vertical-align: top;
+}
+
+.prose td {
+  border-bottom: 1px solid var(--line);
+  color: color-mix(in srgb, var(--ink) 88%, var(--ink-muted));
+}
+
+.prose td:first-child {
+  color: var(--ink);
+  font-weight: 560;
+}
+
+.prose td code {
+  white-space: normal;
+}
+
+.post-cta {
+  margin-top: var(--space-9);
+}
+
+.cta-box {
+  display: grid;
+  gap: var(--space-3);
+  max-width: 40rem;
+  padding: clamp(var(--space-5), 4vw, var(--space-7));
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-m);
+}
+
+.cta-actions {
+  margin-top: var(--space-3);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+
+@media (min-width: 64rem) {
+  .post-head,
+  .toc,
+  .post-cta {
+    max-width: 56rem;
+  }
+
+  /* Center the reading column and line the head, contents and close up with it. */
+  .post-head,
+  .toc,
+  .prose,
+  .post-cta {
+    margin-inline: auto;
+  }
+
+  .post-head,
+  .toc {
+    padding-inline: calc((56rem - 40rem) / 2);
+  }
+
+  .post-cta {
+    display: grid;
+    justify-items: center;
+  }
+}

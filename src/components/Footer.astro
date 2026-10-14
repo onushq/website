@@ -1,29 +1,38 @@
 ---
 import { sources } from "../data/sources";
+
+interface Props {
+  // The story page lists the sources its statistics cite; other pages leave them out.
+  showSources?: boolean;
+}
+
+const { showSources = true } = Astro.props;
 ---
 
-<footer class="site-footer" aria-labelledby="sources-title">
-  <div class="wrap footer-grid">
+<footer class="site-footer" aria-labelledby={showSources ? "sources-title" : undefined}>
+  <div class:list={["wrap", { "footer-grid": showSources }]}>
     <div>
       <p class="wordmark">Onus</p>
       <p class="caption muted credit">
         Onus is based on the manifesto{" "}
-        <i>Code Is Not the Product</i> by Mikias Abebe (September 2026).
+        <a href="/blog/code-is-not-the-product"><i>Code Is Not the Product</i></a> by Mikias Abebe (September 2026).
       </p>
       <p class="caption muted">© 2026 Onus</p>
     </div>
-    <div>
-      <h2 class="label muted" id="sources-title">Sources</h2>
-      <ol class="sources">
-        {
-          sources.map((s, i) => (
-            <li id={`source-${i + 1}`}>
-              <a href={s.url}>{s.title}</a>
-            </li>
-          ))
-        }
-      </ol>
-    </div>
+    {
+      showSources && (
+        <div>
+          <h2 class="label muted" id="sources-title">Sources</h2>
+          <ol class="sources">
+            {sources.map((s, i) => (
+              <li id={`source-${i + 1}`}>
+                <a href={s.url}>{s.title}</a>
+              </li>
+            ))}
+          </ol>
+        </div>
+      )
+    }
   </div>
 </footer>
 
@@ -58,6 +67,10 @@ import { sources } from "../data/sources";
   .credit {
     margin-block: var(--space-3);
     max-width: 30rem;
+  }
+
+  .credit a {
+    color: inherit;
   }
 
   .sources {

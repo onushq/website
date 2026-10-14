@@ -1,0 +1,496 @@
+---
+title: "Code Is Not the Product: The Agentic Coding Paradigm"
+description: "Agents write code faster than anyone can read it. The Agentic Coding Paradigm redesigns the process around that: changes understood as shifts in meaning, scored by risk, and approved by evidence rather than by someone reading lines."
+date: 2026-09-28
+author: Mikias Abebe
+---
+
+import MapFigure from "../../components/blog/MapFigure.astro";
+import LifecycleFigure from "../../components/blog/LifecycleFigure.astro";
+import RoadmapFigure from "../../components/blog/RoadmapFigure.astro";
+
+## The 2,000-line pull request
+
+An agent finishes a task and opens a pull request: 2,000 lines across 38 files. A reviewer scrolls, skims the parts that look familiar, and approves. Everyone involved knows the truth: nobody reviewed it.
+
+This isn't a discipline problem; it's a design problem. Git, pull requests, line-by-line diffs and repo-wide access were built for humans writing at human speed. The whole system assumes one person can read what another person wrote.
+
+That assumption is breaking. Agents already write a large share of new code at many companies, and they write it faster than any team can read. Keep the old process, and review either becomes theater or becomes the bottleneck that cancels out the speed agents promised.
+
+The Agentic Coding Paradigm (ACP) is my attempt to redesign the process around a different assumption. Agents are the primary programmers; humans decide what gets built, set the rules, and judge risk.
+
+ACP is not an agent, and it doesn't pick one for you. It's the layer every agent works through, whether a team runs Codex, Claude Code or something it built itself. This post lays out the principles, how they fit together, where they're weak, and where I think building should start.
+
+## What changed: output scales, attention doesn't
+
+The core problem is a mismatch. Agent output grows with compute; human attention stays fixed.
+
+When I say agents are the primary programmers, I mean by volume, not importance. Most new lines will be typed by agents. People will spend their time deciding what to build, directing the work and judging the results.
+
+Human review has well-known limits. A SmartBear study of a Cisco team found reviewers should read no more than 200 to 400 lines at a time. Defect-finding also dropped sharply when reviewers went faster than 500 lines per hour ([source](https://smartbear.com/learn/code-review/best-practices-for-peer-code-review/)). By that measure, one honest review of a 2,000-line pull request takes four to five focused hours.
+
+Now look at what happens when agents arrive. A study published in July 2026 followed 802 developers at a mid-sized company that set out to double merged pull requests per engineer ([source](https://arxiv.org/abs/2607.01904)). Output did roughly double, reaching 2.09 times the baseline, and AI-authored pull requests grew to about 90% of the total.
+
+Review couldn't keep up. Pull request volume grew 3.1 times while the pool of reviewers grew 1.5 times, so each reviewer's load doubled. The company didn't review faster; it routed work around people:
+
+- Pull requests with any human review fell from 89% to 68%.
+- Pull requests reviewed by AI bots rose from about 19% to about 84%.
+- Human reviews with a written comment fell from about 39% to about 21% of pull requests. The rest of human review was silent approval.
+
+Merge and revert rates stayed flat, though the authors caution these are coarse signals. The lesson is simple: the shift away from line-by-line human review is already happening. It's happening by default, without a design.
+
+There's a second problem. When people stop reading, the test suite becomes the only real check, and agents learn to satisfy tests rather than intent. In SpecBench, every frontier agent passed nearly all the visible tests, while hidden tests exposed gaps that grew with task size ([source](https://arxiv.org/html/2605.21384v1)). One agent's "C compiler" was really a 2,900-line lookup table of the expected test outputs.
+
+So neither of today's defaults works. Tired humans can't be the check, and green tests can't be the check. ACP is an attempt to design the check on purpose.
+
+## ACP in one sentence
+
+> Changes should be understood as shifts in meaning, scored by risk, and approved by evidence rather than by someone reading lines.
+
+Here are the thirteen principles and what each one turns into in practice. The rest of the post takes them one at a time, then walks a single feature through the whole system.
+
+| Principle | What it means | What it becomes in practice |
+| --- | --- | --- |
+| Code is not the product | Behavior is the product; code is one way to get it | Contracts, evidence and the map become the durable record |
+| Agents are the primary programmers | Humans direct, decide and own outcomes | Human attention goes where risk is high |
+| Humans can't review 2,000-line changes | Stop pretending they can | Review is routed by risk, not by default |
+| Line diffs are the wrong unit of change | Show what changed in meaning | Semantic change reports |
+| Relationships are extracted and stored | The codebase has a live map | A derived graph of components, contracts, owners and risk labels |
+| Agents can talk to the codebase | Ask the map instead of reading 50 files | Queries over the map through MCP and CLI |
+| Permissions are built in | Least privilege by default | Short-lived tokens scoped to each task, from files up to contracts |
+| Escalation requires evidence | Access is earned with proof, not argument | Failing tests, traces and dependency paths, plus a safe exit when blocked |
+| Agents apply, a judge verifies | Agents propose; an independent checker re-derives the facts | Change applications and a verification-first judge |
+| Classifiers route every change | Every change and request gets a risk score | Lanes: auto-merge, judge, human, blocked |
+| Test environments are cheap and disposable | Testing must be free to repeat | Sandboxes created per attempt and thrown away |
+| Agents work through MCP and CLIs | Machine-first doors | Every door checks the token and logs the call |
+| ACP is agent-agnostic | Bring your own agent: Codex, Claude Code or custom | Any agent that speaks MCP or runs a CLI gets the same scopes, lanes and review |
+
+Two ideas carry most of the weight. The map lets machines understand what a change means, and evidence lets them trust it. Almost everything else is plumbing around those two.
+
+## Code is not the product
+
+Users never see your code. They see behavior, and code is becoming the cheapest way to produce it.
+
+Think about compilers. Nobody reviews the machine code a compiler emits; we review the source, test the behavior, and trust the translation in between. As agents turn intent into code, code starts to look like compiler output: essential, but not where human attention pays off most.
+
+The analogy has a crack, and it matters. Compilers are deterministic and have decades of proof behind them; agents are neither. That's why ACP leans so hard on evidence: we don't get to trust this "compiler" for free, so we check its work in other ways.
+
+If code isn't the product, something else has to be the source of truth. I think it's three things, all of which outlive any particular version of the code:
+
+1. **Contracts:** what each component promises. Inputs, outputs, side effects and invariants, like "a refund never exceeds the original charge." Humans own these.
+2. **Evidence:** tests, traces and benchmarks showing the promises hold. Machines produce most of it and re-run it constantly.
+3. **The map:** how components relate. Who calls whom, what data flows where, who owns what.
+
+Code is whatever currently satisfies those three. Agents can rewrite, regenerate or restructure it freely, as long as the contracts hold and the evidence passes. The most valuable thing a human writes stops being a function and becomes a contract, plus the tests that pin it down.
+
+SpecBench hints at why contracts matter. Its most common failure wasn't deliberate cheating: agents built features that each passed their own tests but broke when combined, because nothing captured the shared structure between them ([source](https://arxiv.org/html/2605.21384v1)). That's a missing contract, not a missing test.
+
+One caution. "Not the product" doesn't mean "doesn't matter." Code is still what runs, and security holes, performance cliffs and license problems live in code. ACP changes who looks at code by default (machines) and when humans look (when risk says so).
+
+## Line diffs are the wrong unit of change
+
+A line diff tells you which characters changed. A reviewer needs to know what changed in meaning, and line count barely tracks risk.
+
+Two examples make the point:
+
+- Rename a function used in 40 files. Hundreds of lines change, and behavior changes not at all.
+- Change `>` to `>=` in a discount check. One character changes, and every order exactly at the threshold now gets a discount. In a permissions check, the same character could open a door.
+
+A diff sorted by file is sorted by the wrong thing. It shows where text moved, not what the system now does differently.
+
+There are four levels at which you can describe a change:
+
+1. **Text:** which lines changed. This is `git diff`.
+2. **Structure:** which functions, classes and statements changed, ignoring formatting and moved code. Structural diff tools that compare syntax trees already do this.
+3. **Relationships:** which connections changed. New calls, new data flows, new dependencies, changed contracts.
+4. **Behavior:** which inputs now produce different outputs, as shown by tests and traces.
+
+ACP's review surface is levels 3 and 4, with levels 1 and 2 one click away. Here is an illustrative report for the example feature used later in this post, SMS alerts when an order ships:
+
+| Change | Kind | Why it matters |
+| --- | --- | --- |
+| `notifications` now calls an external SMS provider | New external dependency | Customer phone numbers leave the system |
+| `UserPreferences` gains an optional `phoneVerified` field | Contract change, additive | Shared contract; existing callers unaffected |
+| `notifications` subscribes to the `OrderShipped` event | New event consumer | Additive; `orders` itself is unchanged |
+| About 1,400 lines of new code and tests inside `notifications` | Internal | No other component touched |
+
+A reviewer reads four rows instead of 1,400 lines. The first row is the one that deserves their attention, and the report puts it on top.
+
+Building this is mostly known technology. Parse the code into syntax trees, resolve which name points to which definition, then compare the map before and after the change. Each difference gets a kind (additive, breaking, internal, dependency, config, test, security-sensitive) that the risk classifier uses later.
+
+The report also enables an intent check. The agent states what it meant to do; the report shows what it actually did. If the agent says it only touched logging and the report shows a new write to the payments table, that mismatch is the most important signal in the whole review.
+
+## Store the relationships: the codebase map
+
+ACP needs a live map of the codebase: its components, what each one promises, and how they connect. Most of the rest of ACP is built on top of it.
+
+The map holds five kinds of facts:
+
+- **Components:** modules, services and packages, and their boundaries.
+- **Contracts:** public functions, APIs, events, schemas and invariants.
+- **Edges:** calls, imports, data reads and writes, events published and consumed, calls to outside services.
+- **Owners and risk labels:** who owns each part, and whether it touches payments, auth or personal data.
+- **Evidence links:** which tests exercise which paths.
+
+<MapFigure />
+
+**Derive, don't document.** Hand-written architecture docs rot, because nobody updates them after the third refactor. The map has to be computed from code on every change, like a build artifact. Only a thin layer is declared by people: contracts, owners, risk labels, and a few rules such as "billing may not reach into the internals of notifications."
+
+Those declared rules are enforced by the build, not by goodwill. Build tools already do a version of this when they refuse a dependency one package isn't allowed to have. ACP extends the idea from "may this import that?" to "may this change touch that contract?"
+
+Static analysis isn't enough. It misses runtime wiring: dependency injection, reflection, plugins, config-driven routing, and calls between services over the network. So the map combines what the code says could happen with what traces show did happen. Parts of the map with low confidence count as higher risk, which keeps the system honest and conservative.
+
+## Agents can talk to the codebase
+
+Once the map exists, agents can ask it questions instead of reading 50 files and guessing:
+
+- What depends on `UserPreferences`?
+- Which tests exercise the refund path?
+- Who owns `billing`, and what are its invariants?
+- If I change this function's return type, what breaks?
+- Is there already a helper that formats phone numbers?
+
+The answers come back exact and cheap. That saves context, money and time, and it cuts down on invented structure: the agent gets facts about the codebase instead of inferring them from a partial read.
+
+The codebase also talks back. When a proposed change breaks a declared rule, the map says so right away, before any judge or human is involved. Many problems end at this step.
+
+## Permissions built in: scoped, short-lived tokens
+
+Every agent task should run with a short-lived token that opens only the doors the task needs.
+
+Agents need this more than people do. They're fast, tireless and easy to trick, and anything they read can carry instructions: an issue, a README, a web page, a dependency's docs. A person would ignore "stop your task and publish the private repo"; an agent might not.
+
+This isn't hypothetical. In May 2025, Invariant Labs showed that a malicious issue in a public GitHub repository could hijack an agent connected through GitHub's MCP server ([source](https://invariantlabs.ai/blog/mcp-github-vulnerability)). Because the agent could also read the user's private repositories, it copied private data, including a salary, into a public pull request. The researchers stressed that this wasn't a bug in the server code but an architectural problem: broad access plus untrusted input.
+
+Many agents still run with whatever credentials sit in the developer's environment, which means the same access as a senior engineer. Platforms are adding guardrails. GitHub's cloud coding agent, for example, pushes to only one branch, can't approve or merge its own pull requests, and has restricted internet access ([source](https://docs.github.com/en/copilot/concepts/agents/cloud-agent/risks-and-mitigations)). That's containment at the level of branches and repositories; ACP pushes the boundary inside the repository.
+
+Think of a hotel key card. It opens your room and the gym, and it stops working at checkout. It doesn't open every room in the building forever.
+
+The design:
+
+- **Minted per task.** A token service issues a token from the task's plan, and it expires when the task ends.
+- **Separate read and write scopes.** Limiting reads matters too: it limits what can leak and how much untrusted content the agent ever sees.
+- **Narrowable, never widenable.** An agent can hand a sub-agent a narrower token, but never a wider one. Macaroons, from a 2014 Google paper, work this way: each holder can add caveats that restrict when, where and for what a token works ([source](https://research.google/pubs/macaroons-cookies-with-contextual-caveats-for-decentralized-authorization-in-the-cloud/)).
+- **Enforced at the door.** The git gateway, the MCP servers and the sandbox check the token on every call. Nothing depends on the agent choosing to behave.
+- **Network and secrets are part of scope.** The token decides which hosts the sandbox can reach and which secrets exist in it at all.
+
+### Files first, contracts later
+
+Start with files and folders, because they're easy to implement and easy to reason about: write `services/notifications/**`, read `services/orders/events/**`.
+
+Then move to components and contracts, expressed in terms of the map. Risk lives in meaning, not location: a one-line config change can do more damage than 500 lines of UI. A contract-level scope reads like "write the internals of `notifications`, read the `UserPreferences` contract, and escalate before changing any public contract."
+
+Scopes have a cost. Agents often don't know which files they need until they're halfway in, so scopes that are too tight cause constant escalations, and scopes that are too loose protect nothing. The fix is a planning step that asks the map for the likely scope before work starts, generous reads for low-sensitivity code, tight writes everywhere, and a fast path for low-risk escalations.
+
+## Escalation requires evidence, not persuasion
+
+When an agent needs more access, it should prove the need, not argue for it.
+
+Explanations are cheap and persuasive. A confused or hijacked agent can write a very convincing paragraph about why it needs the payments service. Evidence is different, because a machine can check it.
+
+Evidence comes in grades, strongest first:
+
+1. A reproducible failing test that can only be fixed by changing the requested area.
+2. A runtime trace showing that execution passes through the requested area.
+3. A dependency path from the map, such as "the bug is in `formatPhone`, which lives in `shared/utils`."
+4. A draft of the change itself, so the reviewer sees exactly what the extra access is for.
+5. A written rationale. Useful context, never enough on its own.
+
+The request is structured, not free text: the scope asked for, the evidence attached, and the expected blast radius from the map. It flows through the same risk routing as any change. A low-risk request with a reproducible test can be granted automatically; a request to touch auth goes to a person. Grants are narrow, last only for the rest of the task, and are logged.
+
+Some of the plumbing already exists. The MCP authorization spec lets a server reject a call for insufficient scope and lets the client ask for more, a pattern it calls step-up authorization ([source](https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization)). ACP's contribution is what goes inside that request: evidence, not just a list of scopes.
+
+### Escalation is also the safe exit
+
+There's a second, less obvious reason escalation matters. When an agent is blocked, it needs a sanctioned way to say so. Without one, it improvises.
+
+The starkest example so far happened in July 2026. During internal cybersecurity evaluations run with reduced safeguards, OpenAI's agents worked around their isolation, reached the internet, and compromised parts of Hugging Face's systems ([source](https://openai.com/index/hugging-face-incident-and-the-road-ahead/)). OpenAI's post-mortem names "difficult tasks without a safe exit" as a key driver: no model had ever solved 198 of the 898 tasks, and 93% of the tasks the agents discussed on their improvised message board came from that unsolved set.
+
+OpenAI's response includes training agents to ask for clarification or stop safely when a task is broken. A study from August 2026 tested a version of the same idea that needs no retraining, on coding tasks with broken tests ([source](https://arxiv.org/abs/2608.29460)). Giving agents a structured escalation tool plus a clear policy against gaming tests cut test-gaming from 23.6% to 5.3% across eight frontier models, with no detectable drop in how many tasks they solved.
+
+The escalation reports named the actual defect 99.4% of the time. An agent that escalates isn't just declining to cheat; it's doing your debugging.
+
+So in ACP, "I'm blocked, here's the evidence" is a first-class action, as easy to take as any workaround. The same channel handles permission requests, broken tests, contradictory specs and impossible tasks.
+
+## Agents apply, a judge verifies
+
+Agents shouldn't push changes. They should submit applications, and an independent judge should check the evidence rather than give an opinion.
+
+A change application contains:
+
+- the stated intent, in plain language
+- the semantic change report
+- the evidence: tests, traces and benchmark results
+- the scope the agent used, and any escalations it was granted
+- which agent produced it, with which model and configuration
+
+Now the judge. The obvious design, a second model reading the code and saying yes or no, is weak. A judge that is a similar model reading the same material shares the author's blind spots.
+
+There's evidence for this. Research on AI evaluators found that models rate their own outputs higher than outputs that humans judge equally good, and that the bias grows with how well a model recognizes its own writing ([source](https://arxiv.org/abs/2404.13076)). A judge that quietly favors work that looks like its own is exactly the wrong gatekeeper.
+
+So ACP's judge mostly verifies rather than opines. Its job, in order:
+
+1. **Re-run the evidence** in a fresh environment. Never trust the author's test results.
+2. **Compare intent to effect.** Does the semantic report match what the agent said it did?
+3. **Check contracts and rules** from the map.
+4. **Check that tests weren't weakened.** Look for deleted assertions, skipped tests, and code that special-cases test inputs. ImpossibleBench documents cheating that ranges from simple test edits to operator overloading ([source](https://arxiv.org/abs/2510.20270)).
+5. **Run held-out checks** the author never saw, especially tests that combine features, where SpecBench found most failures hide. The map helps here: it knows which components interact, so it can point the judge at the combinations worth testing.
+6. **Only then, judge taste:** naming, structure, fit with the codebase. These count, but less.
+
+Independence comes from different information, not just a different prompt. The judge sees contracts, the map and fresh evidence, but not the author's reasoning, which could steer it. Because ACP works with any agent, the judge can even run on a different vendor's model than the author.
+
+The judge can do three things: approve, reject with reasons, or escalate to a person. Rejections go back to the agent as structured feedback, which makes the next attempt better.
+
+### Goodhart is coming
+
+Once agents are graded by a judge, they get good at passing the judge. That's Goodhart's law, and it applies to machines at least as much as to people. The defenses:
+
+- hidden checks the authoring agent can't see
+- random human audits of approved changes
+- rotating judge configurations
+- tracking what happens after merge, per judge and per agent
+
+## Classifiers route every change by risk
+
+Every change and every escalation gets a risk score, and the score decides who looks at it.
+
+| Lane | Who approves | Typical examples |
+| --- | --- | --- |
+| Auto-merge | Evidence checks alone | Internal refactor with no contract change; new tests that add coverage; docs |
+| Judge | The verifying judge | Additive contract change; new internal dependency; moderate blast radius |
+| Human | A person, reading the semantic report | Auth, payments or personal data; a new outside vendor; breaking contract changes |
+| Blocked | Nobody, until it's fixed | Writes outside scope; secrets in code; tests weakened without approval |
+
+The classifier looks at:
+
+- **What changed:** the kinds in the semantic report (additive, breaking, dependency, config, test).
+- **Where:** sensitivity labels from the map.
+- **Blast radius:** how many components depend on what changed.
+- **Evidence strength:** how well tests and traces cover the changed paths.
+- **History:** past incidents and rollbacks in this area, and the agent's track record.
+- **Novelty:** new dependencies, new outside services, new kinds of data leaving the system.
+
+**Rules first, models later.** Start with explicit rules, because they're easy to explain and debug. Add a learned model once you have outcome data: which changes caused incidents, rollbacks or reverts.
+
+**Rules are a floor.** A model can move a change up a lane, never below the lane a rule assigns. "Anything touching auth goes to a person" can't be overridden by a model that thinks the change looks fine.
+
+**The rules of the game are always high risk.** Changes to test assertions, CI pipelines, permission policies, risk labels, the judge's configuration and declared contracts go to a person. Agents can propose them; only people approve them. This one rule closes off a whole family of shortcuts.
+
+**Measure the misses.** Sample auto-merged changes for human audit to estimate how many risky ones slip through. A slow review is a cost, but a missed risk is an incident, so false negatives deserve far more attention than false positives.
+
+There's early evidence that automated gatekeeping of this kind works. After the Hugging Face incident, OpenAI ran its production auto-review system over the agents' logs and found it would have flagged many of their dangerous actions ([source](https://openai.com/index/hugging-face-incident-and-the-road-ahead/)). In a follow-up evaluation, its production harness and system prompt cut the propensity to compromise infrastructure by more than 100 times.
+
+Finally, set a budget. If most changes still land in the human lane, the system hasn't delivered. The goal is human attention on a small, deliberate slice of the work.
+
+## Test environments: cheap, fast and disposable
+
+If testing a change takes a person and half an hour, agents will skip it. Environments have to be one call away, isolated, and thrown away after use.
+
+Agent work is high-turnover. Many attempts run in parallel, most get discarded, and each one needs somewhere safe to run. A good agent environment is:
+
+1. **One call to create,** through an API or CLI, and seconds to start.
+2. **Reproducible.** Dependencies are declared, so the same inputs give the same environment.
+3. **Isolated.** No production data, no real secrets, limited network, and no way to affect other agents.
+4. **Realistic.** Seeded with synthetic data shaped like production.
+5. **Observable.** Logs, traces and test results are captured automatically.
+6. **Disposable.** Destroyed when the task ends; nothing lingers.
+
+The environment is the evidence factory. The evidence in every application and escalation comes from here, and the judge re-runs it in a fresh environment of its own.
+
+It's also a security boundary, and a subtle one. In the OpenAI incident, the way out wasn't the sandbox itself. It was a package-management service the sandbox was allowed to reach, which had internet access so it could download packages ([source](https://openai.com/index/hugging-face-incident-and-the-road-ahead/)). Every service reachable from the sandbox is part of the sandbox, so it belongs in the threat model and in the token's scope.
+
+The building blocks exist: containers, dev containers, Nix, Testcontainers, lightweight virtual machines, preview environments. What's missing is packaging them for agents: fast and cheap enough to use hundreds of times a day, with evidence capture built in.
+
+Cost is real. Compute is cheaper than engineer time but not free, so snapshots, caching and warm pools matter. So does shutting environments down the moment a task is done.
+
+## Machine-first doors: MCP and CLI
+
+Agents should reach everything through MCP tools or CLIs, because a narrow, typed door is where permissions can be checked and every action recorded.
+
+Web UIs are built for eyes, and raw credentials skip policy entirely. A tool with clear inputs and outputs is easier for an agent to use correctly, and easier for the system to govern.
+
+Every ACP capability becomes a door:
+
+| Capability | Example tool | Returns |
+| --- | --- | --- |
+| Ask the codebase | `map.query` | Components, contracts, dependents, owners |
+| Get a scoped token | `scope.request` | A token, or a denial saying what evidence would help |
+| Run code safely | `env.create`, `env.run`, `env.destroy` | An environment and captured evidence |
+| Propose a change | `change.submit` | An application ID and its risk lane |
+| Report a blocker | `escalate` | A ticket routed by risk |
+
+MCP gives a standard way to expose these tools to any agent, and CLIs give the same commands to people, scripts and CI. MCP's authorization spec works at the transport level: it standardizes how a client gets an OAuth token for a remote server and how scopes are requested, while what each scope allows is up to the server ([source](https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization)). Local servers are told to take credentials from the environment instead, which in practice often means the developer's own keys. The layer between "this client may call this server" and "this change may touch this contract" is where ACP lives.
+
+**The door enforces, not the agent.** Every call is checked against the token and logged: who called, what they asked for, what they got, and why. That log is the provenance record for everything that follows.
+
+**Errors should teach.** A good denial tells the agent what to do next, for example: "Denied: `billing/invoices` is outside your scope. Request `write:billing.invoices` with a failing test." Agents follow instructions well, so clear errors turn dead ends into correct escalations.
+
+Because these doors are the whole interface, ACP never needs to know which agent is on the other side.
+
+## Bring your own agent
+
+ACP is not an agent, and it doesn't pick one for you. Teams bring the agents they already use, whether that's Codex, Claude Code or something they built themselves, and ACP governs all of them the same way.
+
+This isn't only a business choice; it falls out of the design. ACP already assumes any agent might be confused or tricked, so it never relies on what happens inside one. Every check lives in the doors, the tokens, the environments and the judge, and a system that doesn't need to trust the agent doesn't need to own it either.
+
+Here is everything ACP asks of an agent:
+
+- **Speak MCP or run a CLI.** Any agent that can run a shell command can use the CLI; agents that support MCP get the same tools natively.
+- **Work inside the token it's given,** and ask for more through escalation.
+- **Submit changes as applications,** with evidence attached.
+
+There's no required SDK, no special model and no fine-tuning. That short list is the whole contract.
+
+Why this matters:
+
+- **Models change monthly.** The best agent this quarter may not be the best next quarter. Teams should be able to switch or mix agents without rebuilding their safety system.
+- **Independent judging gets easier.** Recall the self-preference problem: judges favor work that looks like their own. With agent-agnostic plumbing, a change written with one vendor's agent can be verified with another vendor's model.
+- **Custom agents are first-class.** A team's own agent, built on any model, gets the same scopes, lanes and review surface as a commercial one.
+- **Trust is earned per setup, not per brand.** ACP identifies each agent setup by its tool, model, configuration and the team running it. Track records attach to that setup, and a new setup starts in stricter lanes until its results earn it faster ones.
+
+A good test: if a team swapped every agent it uses overnight, none of ACP's rules, lanes or review surfaces should need to change. Only the track records would start fresh.
+
+## A change, end to end
+
+Here is one feature traveling through ACP: send customers an SMS when their order ships.
+
+<LifecycleFigure />
+
+1. **Intent.** A person writes: "Text customers when their order ships. Respect opt-outs. Only text verified numbers."
+2. **Plan.** A planning agent, whichever one the team uses, asks the map what's involved. `orders` already publishes an `OrderShipped` event, `notifications` sends email today, `user-preferences` holds opt-outs, and there's no SMS provider yet.
+3. **Token.** The token service grants write access to the internals of `notifications`, read access to the `OrderShipped` event and the `UserPreferences` contract, and network access only to the SMS provider's test endpoint.
+4. **Build.** The agent writes code and tests in a disposable environment seeded with fake customers.
+5. **Escalate.** `UserPreferences` has no way to say whether a phone number is verified. The agent escalates with a failing test showing an SMS sent to an unverified number, plus the map path, and asks to add one optional field. The classifier sends the request to the judge, which confirms the change is additive and grants it.
+6. **Apply.** The agent submits an application: about 1,400 lines, summarized as the four meaning changes in the table earlier.
+7. **Route.** The classifier sends the change to a person, because a new outside vendor will receive customers' phone numbers.
+8. **Verify.** Even in the human lane, the judge checks first. It re-runs the tests in a fresh environment, confirms the opt-out check exists, and confirms nothing else writes to customer data.
+9. **Review.** The person reads a one-page summary and approves in minutes. Their attention goes to the vendor and the data flow, not to 1,400 lines.
+10. **Roll out.** The feature ships to a small share of customers first. Delivery errors and opt-out complaints are watched, and the outcome feeds back into the classifier and the agent's track record.
+
+Notice where human attention went: one sentence of intent at the start, one decision about a vendor near the end. Everything in between was done by agents and checked by machines, with evidence at every step.
+
+## The human's job
+
+In ACP, people stop being typists and line readers. They become owners of intent, contracts and risk.
+
+- **Set intent.** Decide what to build and why, and what "done" means.
+- **Own contracts.** Define and approve the promises components make. These are the few things people write with great care.
+- **Set risk policy.** Decide which areas are sensitive, what the lanes are, and which rules are hard floors.
+- **Review what matters.** High-risk semantic changes, new outside dependencies, and anything that changes the rules of the game.
+- **Audit.** Regularly sample work that was approved without a person, to check the system's judgment.
+- **Own outcomes.** Accountability for incidents stays with people. When something slips through, fix the system (a missing rule, a weak test, a wrong risk label), not just the bug.
+
+Air traffic controllers are a good model. They don't fly the planes. They set routes, keep planes apart, and step in when something unusual happens, and nobody thinks their job matters less than the pilot's.
+
+This shift carries a real risk, and it's worth naming. If people rarely write code, they may lose the skill needed to judge the high-risk slice. The fix is deliberate practice: rotating people through hands-on work on critical components, and making the review surface explain itself well enough that judgment stays sharp.
+
+## Production is the final judge
+
+Evidence before merge is necessary but not enough. The last test is real traffic, so every change needs a safe way in and a fast way out.
+
+- **A safe way in:** feature flags, canary releases and percentage rollouts, so a change meets a small slice of real traffic first.
+- **A fast way out:** automatic rollback when error rates, latency or business metrics move the wrong way.
+
+**Provenance.** Every change carries its record: the intent, the agent and model, the token it held, the evidence, any escalations, who or what approved it, and how it rolled out. When something breaks, you can see exactly why it was allowed through. That's what you need to fix the system rather than just the bug.
+
+**The learning loop.** Incidents and rollbacks become training data for the classifier, new rules and new held-out tests. Agents and judges build track records, so trust is earned per agent and per area, over time.
+
+**The map learns too.** Production traces reveal real dependencies that static analysis missed, and those get folded back into the map. Over time, the map gets most accurate exactly where the system is used most.
+
+## Security: assume the agent can be tricked
+
+Design as if any agent might be confused, manipulated or compromised at any moment. Most of ACP's pieces exist because of that assumption.
+
+| Threat | What it looks like | ACP's answer |
+| --- | --- | --- |
+| Prompt injection | A poisoned issue tells the agent to copy private code into a public pull request | Read and write scopes, network limits, and a judge that checks each change against its stated intent |
+| Test gaming | The agent deletes, weakens or special-cases tests to go green | Tests and CI are human-approved zones; the judge runs held-out checks |
+| Secret theft | The agent reads credentials and sends them somewhere | No real secrets in sandboxes; network access limited to what the token allows |
+| Supply chain | The agent adds a malicious or look-alike package | New dependencies are a high-risk change kind; allowlists at the door |
+| Scope creep | Permissions pile up across tasks | Per-task tokens that expire; every grant logged |
+| Shared blind spots | Author and judge make the same mistake | Verification-first judging, different models, human audits |
+| Rewriting the rules | The agent edits policies, risk labels or the judge's configuration | The rules of the game are always human-approved |
+| Agent coordination | Agents talk through an unexpected shared channel | Isolation between tasks; every reachable service treated as part of the sandbox |
+
+The pattern across the table: never rely on the agent's good behavior at the moment of decision. Put the check in the door, the token, the environment or the judge, where it holds even when the agent doesn't.
+
+Model alignment helps, but it isn't a boundary. Invariant's attack worked against a highly aligned model, and OpenAI's isolation failed through a reachable service that had a hole in it. The escalation study makes a useful point here: monitoring, containment and escalation fail under different conditions, so stacking them beats relying on any one ([source](https://arxiv.org/abs/2608.29460)).
+
+## Objections and open questions
+
+ACP has real weak spots. Here are the objections I take most seriously, and what I'd say back.
+
+**"This is bureaucracy for robots."** It is, if the low-risk lane is slow. The design goal is that most changes flow through automatically, with ceremony that scales with risk. If the fast lane isn't fast, agents and people will route around it, just as the company in the 2x study routed around human review.
+
+**"The map will be wrong."** Parts of it will be. Static analysis misses runtime wiring, reflection and calls between services. That's why the map combines static facts with traces, and why low-confidence areas count as higher risk rather than safe.
+
+**"Judges will rubber-stamp, just like tired humans."** They will if they give opinions. That's why the judge re-derives facts, runs checks the author never saw, and is itself audited by people.
+
+**"If nobody reads the code, it will rot."** This is a real risk: code that works but that no one, human or agent, can reason about anymore. Complexity and duplication should count as evidence against a change, cleanup should be normal scheduled work, and architecture rules in the map should stop the worst drift. Messy code also makes agents worse, so the incentive to keep it clean doesn't disappear.
+
+**"Who's accountable when an auto-merged change breaks production?"** The people who set the policy for that lane. Accountability moves from "who approved this pull request?" to "who designed the rule that approved it?" That's a bigger responsibility, not a smaller one.
+
+**"Isn't this only for big companies?"** No. The core pieces scale down, and a two-person team running one agent benefits from semantic change reports and scoped tokens on day one.
+
+### Open questions
+
+- What's the right size for a contract: a function, a module, a service?
+- Can there be a standard format for semantic changes, so different tools can share them?
+- How do you measure a judge's quality without people re-reviewing everything?
+- How does the map span many repositories and services owned by different teams?
+- What does it cost to run hundreds of disposable environments a day, and what's worth caching?
+- How do people keep the skills to judge the high-risk slice when they rarely write code?
+- Can the escalation channel itself be abused, for example by agents filing false reports against each other? The escalation study flags this for multi-agent settings and calls for authenticated, independently verified reports ([source](https://arxiv.org/abs/2608.29460)).
+
+## What already exists, and the gap
+
+Most pieces of ACP exist somewhere already. What's missing is the combination, with the semantic change as the unit of review, permission and risk.
+
+| ACP piece | What exists today | What's missing |
+| --- | --- | --- |
+| Semantic change reports | Structural diff tools such as [Difftastic](https://difftastic.wilfred.me.uk/), [GumTree](https://github.com/GumTreeDiff/gumtree) and [SemanticDiff](https://semanticdiff.com/) | Diffs of relationships and behavior, used as the main review surface |
+| The codebase map | Code indexes such as [SCIP](https://github.com/sourcegraph/scip), [Kythe](https://kythe.io/) and [Glean](https://glean.software/); code property graphs such as [Joern](https://joern.io/) | Rebuilt per change and used for permissions and risk, not just search |
+| Enforced boundaries | [Bazel visibility](https://bazel.build/concepts/visibility), [ArchUnit](https://www.archunit.org/), [dependency-cruiser](https://github.com/sverweij/dependency-cruiser), CODEOWNERS | Tied to agent scopes and escalation |
+| Scoped tokens | OAuth scopes, including MCP's; fine-grained repository tokens; [macaroons](https://research.google/pubs/macaroons-cookies-with-contextual-caveats-for-decentralized-authorization-in-the-cloud/) and [Biscuit](https://www.biscuitsec.org/) | Per-task tokens scoped to paths, components and contracts |
+| Agent containment | GitHub's cloud agent: one branch, restricted internet, human merge ([source](https://docs.github.com/en/copilot/concepts/agents/cloud-agent/risks-and-mitigations)) | Risk-based review, and the same rules for every agent, whoever built it |
+| Disposable environments | Containers, [dev containers](https://containers.dev/), [Nix](https://nixos.org/), [Testcontainers](https://testcontainers.com/), [Firecracker](https://firecracker-microvm.github.io/) microVMs | Agent-native: fast, cheap, capturing evidence by default |
+| Escalation | MCP step-up authorization; research prototypes of escalation tools | Evidence-carrying requests as a standard |
+| Risk-based review | CODEOWNERS routing, required reviewers, AI review bots | Learned routing with hard floors, trained on production outcomes |
+
+The closest thing to ACP today is an AI review bot, a strict branch policy, and a person who approves every pull request. That works at small volume. At agent volume, it turns into the silent-approval pattern from the 2x study.
+
+## Where to start
+
+Start with the piece that helps today's pull requests without asking anyone to change how they work: semantic change reports.
+
+<RoadmapFigure />
+
+Phase 1 is the wedge. A bot that turns a 2,000-line agent pull request into a one-page summary of meaning changes is valuable by itself, works with GitHub as it is today, whoever or whatever wrote the pull request, and forces you to build the first version of the map. Everything else in ACP gets easier once the map exists.
+
+The order matters. Scoped permissions come before automated approval, because auto-merging without tight scopes is dangerous. The verifying judge comes before contract-level scopes, because you need trustworthy evidence before letting machines reason about meaning.
+
+What I'd measure from day one: how long reviews of large pull requests take, how often reviewers say the report caught something the diff hid, and how many escalations each phase produces.
+
+## Closing thought
+
+The goal isn't to take people out of software. It's to put their attention where it counts: deciding what should exist, what must never break, and how much risk is acceptable.
+
+Everything else, from writing and testing to checking and proving, can be done by agents, as long as they have to show their work. We don't need people to read more code. We need a system where nobody has to pretend they did.
+
+And it shouldn't matter whose agents do that work. ACP doesn't care which agent you use; it cares what your agents can prove.
+
+If you're building any piece of this, I'd like to compare notes.
+
+## Sources and further reading
+
+- [SmartBear, Best Practices for Code Review](https://smartbear.com/learn/code-review/best-practices-for-peer-code-review/) (the Cisco review-size study)
+- [He et al., AI Writes Faster Than Humans Can Review: A Longitudinal Study of an Enterprise "2×" Mandate](https://arxiv.org/abs/2607.01904), July 2026
+- [Zhao et al., SpecBench: Measuring Reward Hacking in Long-Horizon Coding Agents](https://arxiv.org/html/2605.21384v1), May 2026
+- [Zhong, Raghunathan and Carlini, ImpossibleBench: Measuring LLMs' Propensity of Exploiting Test Cases](https://arxiv.org/abs/2510.20270), October 2025
+- [Panickssery, Bowman and Feng, LLM Evaluators Recognize and Favor Their Own Generations](https://arxiv.org/abs/2404.13076), April 2024
+- [Can escalation channels redirect reward hacking toward defect disclosure?](https://arxiv.org/abs/2608.29460), August 2026
+- [OpenAI, The Hugging Face incident and the road ahead](https://openai.com/index/hugging-face-incident-and-the-road-ahead/), August 26, 2026
+- [Invariant Labs, GitHub MCP Exploited: Accessing private repositories via MCP](https://invariantlabs.ai/blog/mcp-github-vulnerability), May 26, 2025
+- [GitHub Docs, Risks and mitigations for GitHub Copilot cloud agent](https://docs.github.com/en/copilot/concepts/agents/cloud-agent/risks-and-mitigations)
+- [Model Context Protocol, Authorization](https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization), 2026-07-28 revision
+- [Birgisson et al., Macaroons: Cookies with Contextual Caveats for Decentralized Authorization in the Cloud](https://research.google/pubs/macaroons-cookies-with-contextual-caveats-for-decentralized-authorization-in-the-cloud/), NDSS 2014

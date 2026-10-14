@@ -14,6 +14,7 @@
     "docs:sync": "node scripts/sync-docs.mjs"
   },
   "dependencies": {
+    "@astrojs/mdx": "^8.0.3",
     "@astrojs/vercel": "^11.0.12",
     "@farming-labs/astro": "0.2.118",
     "@farming-labs/astro-theme": "0.2.118",

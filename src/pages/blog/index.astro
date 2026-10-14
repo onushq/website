@@ -1,0 +1,44 @@
+---
+export const prerender = true;
+
+import Base from "../../layouts/Base.astro";
+import Header from "../../components/Header.astro";
+import Footer from "../../components/Footer.astro";
+import { formatDate, postUrl, publishedPosts, readingMinutes } from "../../lib/blog";
+import "../../styles/blog.css";
+
+const posts = await publishedPosts();
+---
+
+<Base title="Blog | Onus" description="Writing from the Onus team on reviewing agent-written code by meaning, risk and evidence.">
+  <Header />
+  <main id="main" class="blog-main">
+    <div class="wrap blog-index">
+      <header class="blog-head">
+        <p class="label muted">Blog</p>
+        <h1 class="display-l">Notes on code nobody has to pretend they read.</h1>
+        <p class="body-l muted">
+          Why Onus exists, how it works, and what we learn running it. <a href="/blog/rss.xml">RSS</a>
+        </p>
+      </header>
+      <ol class="post-list">
+        {
+          posts.map((post) => (
+            <li>
+              <a class="post-card" href={postUrl(post)}>
+                <p class="caption muted">
+                  <time datetime={post.data.date.toISOString()}>{formatDate(post.data.date)}</time> · {post.data.author} ·{" "}
+                  {readingMinutes(post)} min read
+                </p>
+                <h2 class="display-s">{post.data.title}</h2>
+                <p class="muted">{post.data.description}</p>
+                <span class="read label">Read the post →</span>
+              </a>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </main>
+  <Footer showSources={false} />
+</Base>

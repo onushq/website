@@ -58,8 +58,19 @@ Fallbacks: without WebGL the canvas is hidden and the page reads as plain text o
 - `src/pages/index.astro` assembles the page: the scene layer, the header, the chapter rail, and the chapters in `src/components/chapters/`.
 - `src/data/pr.ts` holds the example pull request's four changes in meaning.
 - `src/data/release.ts` holds the release links of the Install chapter. Downloads point at `releases/latest/download/`, so only the Action example's `tag` needs updating when a version ships.
+- `src/pages/blog/` is the blog: the list at `/blog`, one prerendered page per post, and `/blog/rss.xml`. See [Blog](#blog).
 - `astro.config.mjs` redirects `/install.sh` to the installer attached to the latest GitHub release.
 - The site builds with `output: "server"` and the Vercel adapter. The story page (`src/pages/index.astro`) is prerendered; `/docs`, its Markdown routes (`/docs/<page>.md`), `/llms.txt`, the sitemaps and the docs MCP endpoint render on demand.
+
+## Blog
+
+Posts are MDX files in `src/content/blog/` (the `blog` collection in `src/content.config.ts`). The file name is the URL: `code-is-not-the-product.mdx` is `/blog/code-is-not-the-product`. Front matter takes `title`, `description`, `date`, `author` and an optional `draft: true`, which keeps a post out of the list, the feed and the build.
+
+- `src/lib/blog.ts` lists published posts, newest first, and works out reading time.
+- `src/styles/blog.css` sets the reading column (40rem) and a wider track (56rem) that figures and tables break out to. Tables scroll sideways on phones.
+- Diagrams are Astro components in `src/components/blog/`, drawn in HTML and CSS from the tokens rather than as images, so they follow the theme and reflow on phones. `Figure.astro` gives each one its label, title and caption.
+
+The first post is the manifesto Onus is built on, transcribed from `manifesto.pdf` in the onus repository with its three diagrams redrawn.
 
 ## Docs
 

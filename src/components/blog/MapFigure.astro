@@ -1,0 +1,227 @@
+---
+// The codebase map: three inputs feed it, four parts of ACP read from it.
+import Figure from "./Figure.astro";
+
+const inputs = [
+  { name: "Static analysis", note: "Syntax trees, symbol resolution, imports" },
+  { name: "Runtime traces", note: "from test environments and production" },
+  { name: "Declared by humans", note: "contracts, owners, risk labels, rules" },
+];
+
+const facts = [
+  "Components and boundaries",
+  "Contracts: APIs, events, schemas, invariants",
+  "Edges: calls, data flows, events, external services",
+  "Owners and risk labels",
+  "Test coverage per path",
+];
+
+const consumers = [
+  { name: "Reviewers", note: "semantic change reports" },
+  { name: "Permissions", note: "scopes named in map terms" },
+  { name: "Risk classifier", note: "blast radius, sensitivity" },
+  { name: "Agents", note: "questions via MCP and CLI" },
+];
+---
+
+<Figure
+  label="the codebase map · 3 inputs, 4 consumers"
+  title="One map, derived from code, feeds every part of ACP"
+  caption="Three sources feed the map, and four parts of ACP read from it. Because it is rebuilt from code on every change, it can't quietly drift out of date."
+>
+  <div class="map">
+    <div class="side">
+      <p class="group">Built from</p>
+      <ul class="boxes inputs">
+        {
+          inputs.map((b) => (
+            <li class="box">
+              <strong>{b.name}</strong>
+              <span>{b.note}</span>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+    <div class="core">
+      <p class="core-title">The map</p>
+      <ul>{facts.map((f) => <li>{f}</li>)}</ul>
+      <p class="core-foot">Rebuilt on every change</p>
+    </div>
+    <div class="side">
+      <p class="group">Used by</p>
+      <ul class="boxes outputs">
+        {
+          consumers.map((b) => (
+            <li class="box">
+              <strong>{b.name}</strong>
+              <span>{b.note}</span>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </div>
+</Figure>
+
+<style>
+  .map {
+    --reach: var(--space-6);
+    display: grid;
+    gap: var(--space-5);
+  }
+
+  .group {
+    font-size: 0.8125rem;
+    color: var(--ink-muted);
+    margin-bottom: var(--space-2);
+  }
+
+  .boxes {
+    display: grid;
+    gap: var(--space-3);
+  }
+
+  .outputs {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .box {
+    position: relative;
+    display: grid;
+    gap: 2px;
+    padding: var(--space-3) var(--space-4);
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-s);
+    font-size: 0.875rem;
+    line-height: 1.35;
+  }
+
+  .box strong {
+    font-weight: 620;
+  }
+
+  .box span {
+    color: var(--ink-muted);
+    font-size: 0.8125rem;
+  }
+
+  .core {
+    position: relative;
+    padding: var(--space-5);
+    background: var(--surface);
+    border: 1.5px solid var(--ink-muted);
+    border-radius: var(--radius-m);
+    font-size: 0.9375rem;
+    line-height: 1.4;
+  }
+
+  .core-title {
+    font-size: 1.125rem;
+    font-stretch: 112%;
+    font-weight: 650;
+  }
+
+  .core ul {
+    margin-top: var(--space-3);
+    display: grid;
+    gap: var(--space-2);
+  }
+
+  .core-foot {
+    margin-top: var(--space-4);
+    font-size: 0.8125rem;
+    color: var(--ink-muted);
+  }
+
+  /* Stacked: one arrow down into the map, one out of it. */
+  .core::before,
+  .core::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    width: 1px;
+    height: var(--space-5);
+    background: var(--conn);
+  }
+
+  .core::before {
+    bottom: 100%;
+  }
+
+  .core::after {
+    top: 100%;
+  }
+
+  /* Side by side: an arrow from every input into the map, and from the map to every consumer. */
+  @media (min-width: 44rem) {
+    .map {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr) minmax(0, 1fr);
+      gap: var(--reach);
+      align-items: stretch;
+    }
+
+    .side {
+      display: grid;
+      grid-template-rows: auto 1fr;
+    }
+
+    .outputs {
+      grid-template-columns: 1fr;
+    }
+
+    .boxes {
+      align-content: stretch;
+    }
+
+    .box {
+      align-content: center;
+    }
+
+    .inputs .box::after,
+    .outputs .box::before {
+      content: "";
+      position: absolute;
+      top: 50%;
+      width: var(--reach);
+      height: 1px;
+      background: var(--conn);
+    }
+
+    .inputs .box::after {
+      left: 100%;
+    }
+
+    .outputs .box::before {
+      right: 100%;
+    }
+
+    /* Arrowheads point the way the facts flow. */
+    .inputs .box::before,
+    .outputs .box::after {
+      content: "";
+      position: absolute;
+      top: calc(50% - 4px);
+      border-block: 4px solid transparent;
+      border-left: 6px solid var(--conn);
+    }
+
+    .inputs .box::before {
+      left: calc(100% + var(--reach) - 6px);
+    }
+
+    .outputs .box::after {
+      left: -6px;
+    }
+
+    .core {
+      margin-top: calc(0.8125rem * 1.6 + var(--space-2));
+    }
+
+    .core::before,
+    .core::after {
+      display: none;
+    }
+  }
+</style>
