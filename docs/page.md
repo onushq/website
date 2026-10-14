@@ -39,16 +39,18 @@ These pages are the guide that ships inside the `onus` binary: `onus help <topic
 | --- | --- |
 | [getting-started](/docs/getting-started) | Install Onus, build a map and read your first report |
 | [commands](/docs/commands) | Every command and flag, with examples and exit codes |
-| [reports](/docs/reports) | Reading a report: rows, ranking, evidence and the JSON |
+| [reports](/docs/reports) | Reading a report: rows, ranking, evidence, the changed lines tests ran and the JSON |
 | [changes](/docs/changes) | Every kind and subkind of change Onus reports |
 | [configuration](/docs/configuration) | The onus.yaml reference: components, rules, labels, extractors |
 | [intent](/docs/intent) | Checking a change against its stated intent |
 | [ci](/docs/ci) | Running Onus on every pull request, and outcome records kept by CI |
 | [agents](/docs/agents) | The map for coding agents: onus mcp, its tools, many agents and worktrees |
 | [scopes](/docs/scopes) | Task tokens, the git gateway, escalation with evidence and the audit log |
-| [lanes](/docs/lanes) | Risk lanes, change submissions, the verifying judge and outcome records |
+| [lanes](/docs/lanes) | Risk lanes, change submissions, the learned model, the verifying judge, outcome records and provenance |
+| [production](/docs/production) | Production signals, rollout plans per lane and automatic rollback |
 | [web-interface](/docs/web-interface) | The web interface: onus ui opens all of it in your browser |
-| [environments](/docs/environments) | Environments built from a commit, the evidence store, and traces into the map |
+| [environments](/docs/environments) | Environments built from a commit, the evidence store, traces and coverage into the map, and the behavior diff |
+| [cloud](/docs/cloud) | Onus Cloud from the CLI: onus login, scoped tokens, hosted environments, evidence, escalations, maps and agents |
 | [plugins](/docs/plugins) | New languages and frameworks, SCIP indexes, language servers, trusted mode |
 | [how-it-works](/docs/how-it-works) | How maps are built and compared |
 | [troubleshooting](/docs/troubleshooting) | Map confidence notes, common questions and current limits |
