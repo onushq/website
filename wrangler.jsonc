@@ -12,6 +12,12 @@
     "binding": "ASSETS",
     "html_handling": "drop-trailing-slash"
   },
+  // onushq.com is served by this Worker; www.onushq.com is attached too, and a Cloudflare
+  // redirect rule sends it to onushq.com (308) before the Worker runs.
+  "routes": [
+    { "pattern": "onushq.com", "custom_domain": true },
+    { "pattern": "www.onushq.com", "custom_domain": true }
+  ],
   "observability": {
     "enabled": true
   }
