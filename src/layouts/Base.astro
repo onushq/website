@@ -1,5 +1,6 @@
 ---
 import "@fontsource-variable/archivo/standard.css";
+import archivo from "@fontsource-variable/archivo/files/archivo-latin-standard-normal.woff2?url";
 import "@fontsource-variable/geist-mono/index.css";
 import "../styles/tokens.css";
 import "../styles/base.css";
@@ -25,6 +26,7 @@ const canonical = new URL(Astro.url.pathname, site).toString();
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
+    <link rel="preload" href={archivo} as="font" type="font/woff2" crossorigin />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="alternate" type="application/rss+xml" title="Onus blog" href="/blog/rss.xml" />
     <meta name="theme-color" content="#0b1620" />
@@ -43,9 +45,6 @@ const canonical = new URL(Astro.url.pathname, site).toString();
       if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
         document.documentElement.classList.add("motion");
       }
-    </script>
-    <script is:inline>
-      window.si = window.si || function () { (window.siq = window.siq || []).push(arguments); };
     </script>
   </head>
   <body>

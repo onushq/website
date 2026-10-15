@@ -43,7 +43,7 @@ const n = (x: number) => x.toLocaleString("en-US");
         examples.map((e, i) => {
           const flagged = e.rows.filter((r) => r.flag).length;
           return (
-            <article class="panel glass" role="tabpanel" id={`ex-${e.pr}`} aria-labelledby={`ex-tab-${e.pr}`} hidden={i !== 0}>
+            <div class="panel glass" role="tabpanel" id={`ex-${e.pr}`} aria-labelledby={`ex-tab-${e.pr}`} hidden={i !== 0}>
               <header class="panel-head">
                 <div>
                   <p class="label muted">
@@ -73,7 +73,7 @@ const n = (x: number) => x.toLocaleString("en-US");
               </ul>
               {e.more > 0 && <p class="caption muted more">and {e.more} more quiet {e.more === 1 ? "row" : "rows"}</p>}
               <p class="note body">{e.note}</p>
-            </article>
+            </div>
           );
         })
       }

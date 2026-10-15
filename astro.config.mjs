@@ -17,6 +17,12 @@ export default defineConfig({
   session: false,
   devToolbar: { enabled: false },
   vite: {
+    build: {
+      // Inline stylesheets under 24 KB, so the story page and the blog paint without waiting
+      // on a CSS request; the docs' 100 KB stylesheet stays external and cached. Other assets
+      // keep Vite's default (undefined falls back to 4 KB).
+      assetsInlineLimit: (file, content) => (file.endsWith(".css") ? content.length < 24 * 1024 : undefined),
+    },
     resolve: {
       alias: { jiti: fileURLToPath(new URL("./src/lib/jiti-stub.ts", import.meta.url)) },
     },
