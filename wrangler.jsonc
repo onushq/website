@@ -1,0 +1,18 @@
+// The website as a Cloudflare Worker: prerendered pages and assets are static assets, and
+// /docs and /api/docs are rendered by the Worker (@astrojs/cloudflare). `npm run deploy`
+// builds and deploys; the GitHub Action does the same on main.
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "onus-website",
+  "main": "@astrojs/cloudflare/entrypoints/server",
+  "compatibility_date": "2026-09-01",
+  "compatibility_flags": ["nodejs_compat"],
+  // /docs/getting-started, not /docs/getting-started/ (the URLs the site and Vercel used).
+  "assets": {
+    "binding": "ASSETS",
+    "html_handling": "drop-trailing-slash"
+  },
+  "observability": {
+    "enabled": true
+  }
+}

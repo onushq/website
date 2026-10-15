@@ -1,6 +1,6 @@
 # onushq.com
 
-The website for Onus. It's a single static page built with Astro and deployed on Vercel.
+The website for Onus. It's built with Astro and runs as a Cloudflare Worker.
 
 ## Develop
 
@@ -60,7 +60,7 @@ Fallbacks: without WebGL the canvas is hidden and the page reads as plain text o
 - `src/data/release.ts` holds the release links of the Install chapter. Downloads point at `releases/latest/download/`, so only the Action example's `tag` needs updating when a version ships.
 - `src/pages/blog/` is the blog: the list at `/blog`, one prerendered page per post, and `/blog/rss.xml`. See [Blog](#blog).
 - `astro.config.mjs` redirects `/install.sh` to the installer attached to the latest GitHub release.
-- The site builds with `output: "server"` and the Vercel adapter. The story page (`src/pages/index.astro`) is prerendered; `/docs`, its Markdown routes (`/docs/<page>.md`), `/llms.txt`, the sitemaps and the docs MCP endpoint render on demand.
+- The site builds with `output: "server"` and the Cloudflare adapter (`wrangler.jsonc`). The story page, the blog and the docs pages are prerendered, in Node (docs code highlighting uses WebAssembly, which a Worker may not compile). The docs' Markdown routes (`/docs/<page>.md`), `/llms.txt`, search, the sitemaps and the MCP endpoint render on demand in the Worker. `src/lib/jiti-stub.ts` stands in for jiti, which Farming Labs Docs bundles but the site never uses.
 
 ## Blog
 
@@ -91,8 +91,10 @@ The first post is the manifesto Onus is built on, transcribed from `manifesto.pd
 
 ## Deploy
 
-Production deploys go to Vercel (project `onus-website` in the `mikias-tilahun-abebes-projects` team, domain `onushq.com`):
+Production is the Cloudflare Worker `onus-website` on `onushq.com` and `www.onushq.com`. A push to `main` deploys it (`.github/workflows/deploy.yml`). By hand, from a clean checkout:
 
 ```sh
-vercel deploy --prod
+npm run deploy
 ```
+
+Locally in the Workers runtime: `npm run build && npx wrangler dev -c dist/server/wrangler.json`.

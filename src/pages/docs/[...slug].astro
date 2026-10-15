@@ -1,4 +1,12 @@
 ---
+// Prerendered, like index.astro: one page per docs/<slug>/page.md.
+export const prerender = true;
+
+export function getStaticPaths() {
+  const pages = import.meta.glob("/docs/*/page.{md,mdx}");
+  return Object.keys(pages).map((file) => ({ params: { slug: file.split("/")[2] } }));
+}
+
 import DocsShell from "../../components/DocsShell.astro";
 import { load } from "../../lib/docs.server";
 

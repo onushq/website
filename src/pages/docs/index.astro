@@ -1,4 +1,9 @@
 ---
+// Prerendered (in Node, astro.config.mjs): rendering a docs page highlights its code with
+// WebAssembly, which a Cloudflare Worker may not compile. Search, Markdown, llms.txt and
+// MCP stay on demand in the Worker (middleware.ts, api/docs.ts).
+export const prerender = true;
+
 import DocsShell from "../../components/DocsShell.astro";
 import { load } from "../../lib/docs.server";
 
