@@ -9,6 +9,7 @@ import DocsLayout from "@farming-labs/astro-theme/src/components/DocsLayout.astr
 import DocsContent from "@farming-labs/astro-theme/src/components/DocsContent.astro";
 import SearchDialog from "@farming-labs/astro-theme/src/components/SearchDialog.astro";
 import config from "../lib/docs.config";
+import Analytics from "./Analytics.astro";
 
 interface Props {
   // What the docs server's load() returns for this page.
@@ -39,5 +40,6 @@ const canonical = new URL(Astro.url.pathname, "https://onushq.com").toString();
       <DocsContent data={data} config={config} />
     </DocsLayout>
     <SearchDialog config={config} />
+    <Analytics />
   </body>
 </html>

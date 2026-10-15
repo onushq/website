@@ -1,0 +1,18 @@
+---
+// Cloudflare Web Analytics: page views, referrers and Core Web Vitals, with no cookies
+// and no fingerprinting. The token is public (it identifies the site, not a secret) and
+// belongs to the onushq.com zone; numbers are under Analytics & Logs > Web Analytics.
+// Builds outside production (astro dev) leave it out so local visits are not counted.
+const token = "5732f857fe7f4b1eb968911f0b978832";
+---
+
+{
+  import.meta.env.PROD && (
+    <script
+      is:inline
+      defer
+      src="https://static.cloudflareinsights.com/beacon.min.js"
+      data-cf-beacon={JSON.stringify({ token })}
+    />
+  )
+}

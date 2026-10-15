@@ -5,6 +5,7 @@ import "@fontsource-variable/geist-mono/index.css";
 import "../styles/tokens.css";
 import "../styles/base.css";
 import "../styles/components.css";
+import Analytics from "../components/Analytics.astro";
 
 interface Props {
   title: string;
@@ -50,5 +51,6 @@ const canonical = new URL(Astro.url.pathname, site).toString();
   <body>
     <a class="skip-link" href="#main">Skip to content</a>
     <slot />
+    <Analytics />
   </body>
 </html>

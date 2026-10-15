@@ -42,7 +42,8 @@ export default defineDocs({
   feedback: false,
   // Dates would come from file times on the server, not from git history.
   lastUpdated: false,
-  // Nothing about readers leaves the site.
+  // The theme's own analytics stay off; page views are counted by Cloudflare Web
+  // Analytics (src/components/Analytics.astro), which sets no cookies.
   analytics: false,
   telemetry: false,
   llmsTxt: {
